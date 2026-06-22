@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>JobTrack Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   PALETTE  — warm midnight with jewel accents
+═══════════════════════════════════════ */
+:root{
+  /* backgrounds */
+  --bg:#0e1117;
+  --surface:#161b27;
+  --card:#1c2235;
+  --card2:#222a40;
+  --border:#2a3350;
+  --border2:#364060;
+  /* brand accents */
+  --indigo:#5c73f2;
+  --indigo2:#7b8ff5;
+  --teal:#2ec4b6;
+  --teal2:#4dd9cc;
+  --gold:#f5a623;
+  --gold2:#f7be5a;
+  /* status semantic colours */
+  --st-applied-bg:rgba(92,115,242,.18);
+  --st-applied-txt:#8fa3ff;
+  --st-applied-bdr:rgba(92,115,242,.4);
+  --st-screening-bg:rgba(46,196,182,.16);
+  --st-screening-txt:#4dd9cc;
+  --st-screening-bdr:rgba(46,196,182,.38);
+  --st-interview-bg:rgba(245,166,35,.16);
+  --st-interview-txt:#f7be5a;
+  --st-interview-bdr:rgba(245,166,35,.38);
+  --st-offer-bg:rgba(39,174,96,.18);
+  --st-offer-txt:#52d68a;
+  --st-offer-bdr:rgba(39,174,96,.4);
+  --st-rejected-bg:rgba(235,59,90,.16);
+  --st-rejected-txt:#f4748a;
+  --st-rejected-bdr:rgba(235,59,90,.38);
+  --st-ghosted-bg:rgba(120,130,150,.15);
+  --st-ghosted-txt:#9aabb8;
+  --st-ghosted-bdr:rgba(120,130,150,.32);
+  --st-withdrawn-bg:rgba(180,100,220,.14);
+  --st-withdrawn-txt:#c88ce0;
+  --st-withdrawn-bdr:rgba(180,100,220,.3);
+  /* text */
+  --text:#e2e8f8;
+  --text2:#8fa0c0;
+  --muted:#4e5f7a;
+  --danger:#eb3b5a;
+  --green:#27ae60;
+  --green2:#52d68a;
+  --accent-grad:linear-gradient(135deg,#5c73f2 0%,#2ec4b6 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#0a0c14;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  overflow-y:auto;
+  line-height:1.55;
+}
+#canvas{
+  position:fixed !important;
+  top:0 !important; left:0 !important;
+  width:100vw !important; height:100vh !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  display:block;
+}
+#canvas-scrim{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:rgba(8,10,18,.62);
+}
+#bg-canvas{ display:none; }
+header{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:58px;
+  background:rgba(14,17,23,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;gap:.4rem;
+}
+.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--text);white-space:nowrap;}
+.logo em{font-style:italic;background:var(--accent-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-right{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;}
+.date-chip{font-size:.68rem;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.27rem .72rem;}
+.sync-pill{display:flex;align-items:center;gap:.38rem;font-size:.68rem;color:var(--muted);padding:.25rem .72rem;border-radius:6px;background:var(--surface);border:1px solid var(--border);}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+.sync-dot.ok{background:var(--green2);box-shadow:0 0 6px rgba(82,214,138,.5);}
+.sync-dot.err{background:var(--danger);}
+.sync-dot.syncing{animation:pulse .9s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.2;}}
+main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1rem;}
+.stats-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;}
+.stats-label{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500;}
+.stats-dropdown{position:relative;}
+.stats-menu-btn{
+  display:flex;align-items:center;gap:.36rem;
+  font-size:.7rem;color:var(--text2);
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:.27rem .72rem;cursor:pointer;transition:all .14s;font-family:'DM Sans',sans-serif;
+}
+.stats-menu-btn:hover{border-color:var(--border2);color:var(--text);}
+.stats-popover{
+  position:absolute;right:0;top:calc(100% + .38rem);
+  background:var(--card2);border:1px solid var(--border2);border-radius:10px;
+  padding:.5rem;min-width:178px;z-index:300;display:none;
+  box-shadow:0 14px 40px rgba(0,0,0,.6);
+}
+.stats-popover.open{display:block;}
+.sv-row{display:flex;align-items:center;gap:.5rem;padding:.34rem .52rem;border-radius:7px;cursor:pointer;font-size:.78rem;color:var(--text2);transition:background .12s;user-select:none;}
+.sv-row:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.sv-row input[type=checkbox]{accent-color:var(--indigo);width:13px;height:13px;cursor:pointer;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:.72rem;margin-bottom:1.25rem;}
+.scard{
+  background:var(--card);border:1px solid var(--border);border-radius:13px;
+  padding:.9rem 1.05rem;position:relative;overflow:hidden;
+  transition:transform .18s,box-shadow .18s;
+}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--indigo));border-radius:13px 13px 0 0;}
+.scard:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.04);}
+.scard-label{font-size:.63rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
+.scard-value{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--text);line-height:1;}
+.scard-sub{font-size:.66rem;color:var(--muted);margin-top:.26rem;}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:1.25rem;align-items:start;}
+@media(max-width:1020px){.layout{grid-template-columns:1fr;}}
+.form-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:1.35rem;position:sticky;top:70px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(92,115,242,.06);
+}
+@media(max-width:1020px){.form-panel{position:static;}}
+.panel-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:.95rem;display:flex;align-items:center;gap:.45rem;}
+.panel-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-grad);background:var(--indigo);}
+.form-fields{display:flex;flex-direction:column;gap:.68rem;}
+.field{display:flex;flex-direction:column;gap:.27rem;}
+.field label{font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;}
+.field input,.field select,.field textarea{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;
+  padding:.54rem .84rem;outline:none;
+  transition:border-color .16s,box-shadow .16s;width:100%;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--indigo);box-shadow:0 0 0 3px rgba(92,115,242,.14);
+}
+.field select option{background:var(--card);}
+.field textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;}
+.resume-wrap{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;}
+.resume-wrap input[type="file"]{display:none;}
+.resume-btn{
+  display:inline-flex;align-items:center;gap:.38rem;padding:.44rem .82rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;font-size:.76rem;color:var(--text2);transition:all .16s;font-family:'DM Sans',sans-serif;
+}
+.resume-btn:hover{border-color:var(--indigo);color:var(--indigo2);}
+.resume-name{font-size:.72rem;color:var(--teal2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
+.resume-clear{cursor:pointer;color:var(--muted);font-size:.8rem;padding:.14rem .4rem;border-radius:5px;transition:color .14s;}
+.resume-clear:hover{color:var(--danger);}
+.addon-toggle{
+  display:flex;align-items:center;gap:.45rem;cursor:pointer;
+  padding:.44rem .7rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;font-size:.75rem;font-weight:500;color:var(--text2);
+  transition:all .16s;user-select:none;margin-top:.1rem;
+}
+.addon-toggle:hover{border-color:var(--border2);color:var(--text);}
+.addon-toggle .arr{transition:transform .22s;font-size:.62rem;margin-left:auto;}
+.addon-toggle.open .arr{transform:rotate(90deg);}
+.addon-body{display:none;flex-direction:column;gap:.58rem;margin-top:.4rem;border:1px solid var(--border);border-radius:10px;padding:.9rem;}
+.addon-body.open{display:flex;}
+.addon-row{display:flex;align-items:flex-start;gap:.52rem;}
+.addon-chk{margin-top:.56rem;accent-color:var(--indigo);width:13px;height:13px;flex-shrink:0;cursor:pointer;}
+.addon-field{flex:1;opacity:.32;pointer-events:none;transition:opacity .18s;}
+.addon-field.enabled{opacity:1;pointer-events:all;}
+.qa-section{margin-top:.12rem;}
+.qa-section-title{font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.45rem;}
+#qaContainer{display:flex;flex-direction:column;gap:.52rem;}
+.qa-pair{display:grid;grid-template-columns:1fr 1fr;gap:.48rem;}
+.add-qa-btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.71rem;color:var(--indigo2);
+  background:rgba(92,115,242,.1);border:1px solid rgba(92,115,242,.22);
+  border-radius:7px;padding:.28rem .64rem;cursor:pointer;transition:all .14s;margin-top:.32rem;
+}
+.add-qa-btn:hover{background:rgba(92,115,242,.2);}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.5rem .98rem;border-radius:8px;font-size:.8rem;font-weight:500;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .16s;white-space:nowrap;
+}
+.btn-primary{background:var(--indigo);color:#fff;}
+.btn-primary:hover{background:var(--indigo2);box-shadow:0 6px 20px rgba(92,115,242,.35);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface);border-color:var(--border2);color:var(--text);}
+.btn-teal{background:rgba(46,196,182,.14);color:var(--teal2);border:1px solid rgba(46,196,182,.28);}
+.btn-teal:hover{background:rgba(46,196,182,.24);}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(235,59,90,.3);}
+.btn-danger:hover{background:rgba(235,59,90,.1);}
+.btn-sm{padding:.28rem .62rem;font-size:.73rem;border-radius:7px;}
+.btn-full{width:100%;}
+.form-btns{display:flex;gap:.48rem;margin-top:.95rem;}
+.right-panel{display:flex;flex-direction:column;gap:1.05rem;}
+.filter-bar{
+  display:flex;align-items:center;gap:.44rem;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.72rem 1rem;
+}
+.filter-chip{
+  padding:.24rem .7rem;border-radius:6px;font-size:.73rem;font-weight:500;
+  border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .13s;
+}
+.filter-chip.active{background:rgba(92,115,242,.2);border-color:var(--indigo);color:var(--indigo2);}
+.filter-chip:hover:not(.active){border-color:var(--border2);color:var(--text2);}
+.search-wrap{flex:1;min-width:130px;max-width:230px;position:relative;margin-left:auto;}
+.search-wrap input{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:.79rem;
+  padding:.42rem .84rem .42rem 1.9rem;outline:none;transition:border-color .16s;
+}
+.search-wrap input:focus{border-color:var(--indigo);box-shadow:0 0 0 2px rgba(92,115,242,.14);}
+.search-wrap::before{content:'⌕';position:absolute;left:.6rem;top:50%;transform:translateY(-50%);font-size:.95rem;color:var(--muted);pointer-events:none;}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.35);}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.44rem;}
+.table-title{font-family:'DM Serif Display',serif;font-size:.95rem;color:var(--text);}
+.table-meta{font-size:.68rem;color:var(--muted);}
+.col-headers{
+  display:grid;
+  grid-template-columns:1.6fr 1.8fr 130px 108px 90px;
+  gap:0;
+  padding:.46rem 0;
+  border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+}
+.col-h{
+  font-size:.6rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.09em;font-weight:600;padding:.0 1.1rem;
+}
+.app-list{display:flex;flex-direction:column;}
+.app-row{border-bottom:1px solid rgba(42,51,80,.7);transition:background .12s;}
+.app-row:last-child{border-bottom:none;}
+.app-row:hover{background:rgba(92,115,242,.05);}
+.app-summary{
+  display:grid;
+  grid-template-columns:1.6fr 1.8fr 130px 108px 90px;
+  align-items:center;
+  gap:0;
+  padding:.78rem 0;
+  cursor:pointer;
+}
+.app-summary > *{padding:0 1.1rem;}
+.app-co{font-weight:600;font-size:.83rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-pos{font-size:.79rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-date{font-size:.72rem;color:var(--muted);white-space:nowrap;}
+.expand-col{display:flex;justify-content:flex-end;}
+.expand-btn{
+  font-size:.66rem;color:var(--muted);padding:.17rem .48rem;border-radius:5px;
+  background:var(--surface);border:1px solid var(--border);cursor:pointer;
+  transition:all .12s;white-space:nowrap;font-family:'DM Sans',sans-serif;
+}
+.expand-btn:hover{border-color:var(--border2);color:var(--text2);}
+#f_status_wrap .status-sel,
+#e_status_wrap .status-sel{
+  border-radius:8px;
+  font-size:.82rem;
+  padding:.52rem .84rem;
+  width:100%;
+}
+.status-cell{display:flex;align-items:center;}
+.status-sel{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid transparent;border-radius:5px;
+  padding:.2rem .52rem;font-family:'DM Sans',sans-serif;
+  font-size:.68rem;font-weight:600;cursor:pointer;outline:none;
+  transition:all .14s;width:100%;
+}
+.st-applied   .status-sel{background:var(--st-applied-bg);  color:var(--st-applied-txt);  border-color:var(--st-applied-bdr);}
+.st-screening .status-sel{background:var(--st-screening-bg);color:var(--st-screening-txt);border-color:var(--st-screening-bdr);}
+.st-interview .status-sel{background:var(--st-interview-bg);color:var(--st-interview-txt);border-color:var(--st-interview-bdr);}
+.st-offer     .status-sel{background:var(--st-offer-bg);    color:var(--st-offer-txt);    border-color:var(--st-offer-bdr);}
+.st-rejected  .status-sel{background:var(--st-rejected-bg); color:var(--st-rejected-txt); border-color:var(--st-rejected-bdr);}
+.st-ghosted   .status-sel{background:var(--st-ghosted-bg);  color:var(--st-ghosted-txt);  border-color:var(--st-ghosted-bdr);}
+.st-withdrawn .status-sel{background:var(--st-withdrawn-bg);color:var(--st-withdrawn-txt);border-color:var(--st-withdrawn-bdr);}
+.app-detail{display:none;padding:.9rem 1.2rem 1.05rem;border-top:1px solid var(--border);background:rgba(0,0,0,.18);}
+.app-detail.open{display:block;animation:slideDown .17s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:.72rem;}
+.detail-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.52rem .74rem;}
+.dil{font-size:.59rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:500;margin-bottom:.18rem;}
+.div_{font-size:.79rem;color:var(--text2);}
+.div_ a{color:var(--teal2);text-decoration:none;}
+.div_ a:hover{text-decoration:underline;}
+.detail-notes{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.62rem .84rem;font-size:.79rem;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:.68rem;}
+.detail-qa{display:flex;flex-direction:column;gap:.44rem;margin-bottom:.68rem;}
+.dqa-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.52rem .74rem;}
+.dqa-q{font-size:.74rem;color:var(--indigo2);font-weight:600;margin-bottom:.14rem;}
+.dqa-a{font-size:.79rem;color:var(--text2);}
+.detail-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:.72rem;}
+.empty-state .ei{font-size:2.6rem;opacity:.35;}
+.empty-state p{font-size:.84rem;line-height:1.65;max-width:250px;}
+#ctxMenu{
+  position:fixed;z-index:500;
+  background:var(--card2);border:1px solid var(--border2);border-radius:10px;
+  padding:.34rem;box-shadow:0 16px 44px rgba(0,0,0,.65);
+  display:none;min-width:150px;
+}
+#ctxMenu button{
+  display:flex;align-items:center;gap:.5rem;width:100%;padding:.44rem .8rem;
+  background:none;border:none;color:var(--text2);font-family:'DM Sans',sans-serif;
+  font-size:.79rem;cursor:pointer;border-radius:7px;transition:background .11s;
+}
+#ctxMenu button:hover{background:rgba(255,255,255,.06);color:var(--text);}
+#ctxMenu .sep{height:1px;background:var(--border);margin:.22rem 0;}
+#fuStrip{display:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.24);border-radius:10px;padding:.66rem .96rem;font-size:.79rem;color:var(--gold2);}
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .22s;padding:1rem;
+}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--card2);border:1px solid var(--border2);border-radius:18px;
+  padding:1.55rem;width:min(620px,100%);max-height:90vh;overflow-y:auto;
+  transform:scale(.95) translateY(10px);transition:transform .22s;
+  box-shadow:0 24px 70px rgba(0,0,0,.65);
+}
+.modal.wide{width:min(760px,100%);}
+.overlay.open .modal{transform:scale(1) translateY(0);}
+.modal-title{font-family:'DM Serif Display',serif;font-size:1.08rem;color:var(--text);margin-bottom:1.15rem;}
+.modal-btns{display:flex;gap:.46rem;justify-content:flex-end;margin-top:1.15rem;flex-wrap:wrap;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.mgrid .full{grid-column:1/-1;}
+@media(max-width:460px){.mgrid{grid-template-columns:1fr;}}
+.edit-addon-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem;}
+.edit-addon-chk{margin-top:.56rem;accent-color:var(--indigo);width:13px;height:13px;flex-shrink:0;cursor:pointer;}
+.edit-addon-field{flex:1;opacity:.32;pointer-events:none;transition:opacity .18s;}
+.edit-addon-field.enabled{opacity:1;pointer-events:all;}
+.resume-edit-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem;}
+.resume-edit-section label.section-lbl{font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;}
+.resume-current{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;font-size:.78rem;color:var(--teal2);}
+.resume-current span.rc-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.resume-actions{display:flex;gap:.42rem;flex-wrap:wrap;}
+.resume-viewer{width:100%;height:68vh;border:none;border-radius:8px;background:var(--surface);}
+#toast{
+  position:fixed;bottom:1.3rem;right:1.3rem;z-index:600;
+  background:var(--card2);border:1px solid var(--border2);border-radius:10px;
+  padding:.68rem .98rem;font-size:.79rem;color:var(--text);
+  box-shadow:0 12px 36px rgba(0,0,0,.55);
+  display:flex;align-items:center;gap:.44rem;
+  transform:translateY(110%);opacity:0;
+  transition:transform .28s cubic-bezier(.34,1.45,.64,1),opacity .28s;
+  max-width:280px;
+}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast .tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.ri{animation:fadeIn .18s ease forwards;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinning{display:inline-block;animation:spin .6s linear infinite;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:var(--indigo);}
+@media(max-width:760px){
+  header{height:auto;padding:.5rem .9rem;}
+  main{padding:.9rem .65rem;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .field-row{grid-template-columns:1fr;}
+  .form-btns{flex-direction:column;}
+  .col-headers,.app-summary{grid-template-columns:1.4fr 120px 96px 72px !important;}
+  .col-headers .ch-pos,.app-summary .app-pos{display:none;}
+}
+@media(max-width:500px){
+  .col-headers,.app-summary{grid-template-columns:1fr 110px 72px !important;}
+  .col-headers .ch-date,.app-summary .app-date{display:none;}
+}
+</style>
+</head>
+<body>
+<div id="canvas-scrim" aria-hidden="true"></div>
+<header>
+  <div class="logo">Job<em>Track</em> Pro</div>
+  <div class="header-right">
+    <div class="sync-pill" id="syncStatus"><span class="sync-dot" id="syncDot"></span><span id="syncLbl">Loading…</span></div>
+    <div class="date-chip" id="datechip"></div>
+    <button class="btn btn-ghost btn-sm" id="syncBtn" onclick="manualSync()">↑ Sync</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('setupModal')">⚙</button>
+  </div>
+</header>
+<main>
+  <div class="stats-header">
+    <div class="stats-label">Overview</div>
+    <div class="stats-dropdown">
+      <button class="stats-menu-btn" onclick="toggleStatsMenu(event)">☰ Customize</button>
+      <div class="stats-popover" id="statsPopover">
+        <label class="sv-row"><input type="checkbox" id="sv_total"    checked onchange="saveStatsVis()"> Total Applied</label>
+        <label class="sv-row"><input type="checkbox" id="sv_pipeline" checked onchange="saveStatsVis()"> In Pipeline</label>
+        <label class="sv-row"><input type="checkbox" id="sv_week"            onchange="saveStatsVis()"> This Week</label>
+        <label class="sv-row"><input type="checkbox" id="sv_interview"       onchange="saveStatsVis()"> Interviews</label>
+        <label class="sv-row"><input type="checkbox" id="sv_offer"           onchange="saveStatsVis()"> Offers</label>
+        <label class="sv-row"><input type="checkbox" id="sv_rejected"        onchange="saveStatsVis()"> Rejected</label>
+      </div>
+    </div>
+  </div>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="layout">
+    <div class="form-panel">
+      <div class="panel-title"><span class="panel-dot"></span>New Application</div>
+      <div class="form-fields">
+        <div class="field"><label>Company Name *</label><input type="text" id="f_co" placeholder="e.g. Google, Infosys" autocomplete="off"/></div>
+        <div class="field"><label>Position *</label><input type="text" id="f_pos" placeholder="e.g. Software Engineer"/></div>
+        <div class="field"><label>Location</label><input type="text" id="f_loc" placeholder="Remote / City"/></div>
+        <div class="field"><label>Status</label>
+          <div class="status-cell st-applied" id="f_status_wrap" style="border-radius:8px;overflow:hidden;">
+            <select id="f_status" class="status-sel" onchange="colorFormStatus()" style="width:100%;padding:.52rem .84rem;font-size:.82rem;font-weight:500;">
+              <option>Applied</option><option>Screening</option><option>Interview</option><option>Offer</option><option>Rejected</option><option>Ghosted</option><option>Withdrawn</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Applied On</label><input type="date" id="f_date"/></div>
+          <div class="field"><label>Platform / Source</label>
+            <select id="f_src"><option value="">— Select —</option><option>LinkedIn</option><option>Naukri</option><option>Indeed</option><option>Glassdoor</option><option>Company Website</option><option>Referral</option><option>AngelList</option><option>Internshala</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Job Link (URL)</label><input type="url" id="f_link" placeholder="https://..."/></div>
+        <div class="field"><label>Job Description / Notes</label><textarea id="f_notes" placeholder="Paste description, impressions, prep notes…"></textarea></div>
+        <div class="field"><label>Salary Range</label><input type="text" id="f_sal" placeholder="e.g. ₹8–12 LPA or $80k–100k"/></div>
+        <div class="field">
+          <label>Resume Used</label>
+          <div class="resume-wrap">
+            <input type="file" id="f_resume" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" onchange="handleResume(this)"/>
+            <label class="resume-btn" for="f_resume">📎 Attach Resume</label>
+            <span class="resume-name" id="f_resume_name"></span>
+            <span class="resume-clear" id="f_resume_clear" onclick="clearResume()" style="display:none" title="Remove">✕</span>
+          </div>
+        </div>
+        <div class="addon-toggle" id="addonToggle" onclick="toggleAddon()">
+          <span>🗂 Additional Fields</span><span class="arr">▶</span>
+        </div>
+        <div class="addon-body" id="addonBody">
+          <div class="addon-row">
+            <input type="checkbox" class="addon-chk" id="chk_type" onchange="toggleAddonField('af_type',this)"/>
+            <div class="addon-field" id="af_type">
+              <div class="field"><label>Job Type</label>
+                <select id="f_type"><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option><option>Freelance</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="addon-row">
+            <input type="checkbox" class="addon-chk" id="chk_fu" onchange="toggleAddonField('af_fu',this)"/>
+            <div class="addon-field" id="af_fu">
+              <div class="field"><label>Follow-up Date</label><input type="date" id="f_fu"/></div>
+            </div>
+          </div>
+          <div class="addon-row">
+            <input type="checkbox" class="addon-chk" id="chk_round" onchange="toggleAddonField('af_round',this)"/>
+            <div class="addon-field" id="af_round">
+              <div class="field"><label>Interview Round</label>
+                <select id="f_round"><option value="">N/A</option><option>Phone Screen</option><option>Technical</option><option>HR Round</option><option>Case Study</option><option>Final Round</option><option>Offer Stage</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="addon-row">
+            <input type="checkbox" class="addon-chk" id="chk_rec" onchange="toggleAddonField('af_rec',this)"/>
+            <div class="addon-field" id="af_rec">
+              <div class="field"><label>Recruiter / Contact</label><input type="text" id="f_rec" placeholder="Name · email · LinkedIn"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="qa-section">
+          <div class="qa-section-title">Other Questions</div>
+          <div id="qaContainer"></div>
+          <span class="add-qa-btn" onclick="addQAPair()">＋ Add Question</span>
+        </div>
+      </div>
+      <div class="form-btns">
+        <button class="btn btn-ghost" onclick="clearForm()">✕ Clear</button>
+        <button class="btn btn-primary btn-full" onclick="addApp()">＋ Add Application</button>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div id="fuStrip"></div>
+      <div class="filter-bar">
+        <span class="filter-chip active" onclick="setFilter('All',this)">All</span>
+        <span class="filter-chip" onclick="setFilter('Applied',this)" style="color:var(--st-applied-txt)">Applied</span>
+        <span class="filter-chip" onclick="setFilter('Screening',this)" style="color:var(--st-screening-txt)">Screening</span>
+        <span class="filter-chip" onclick="setFilter('Interview',this)" style="color:var(--st-interview-txt)">Interview</span>
+        <span class="filter-chip" onclick="setFilter('Offer',this)" style="color:var(--st-offer-txt)">Offer</span>
+        <span class="filter-chip" onclick="setFilter('Rejected',this)" style="color:var(--st-rejected-txt)">Rejected</span>
+        <span class="filter-chip" onclick="setFilter('Ghosted',this)" style="color:var(--st-ghosted-txt)">Ghosted</span>
+        <div class="search-wrap"><input type="text" id="searchQ" placeholder="Search…" oninput="renderList()"/></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div>
+            <div class="table-title">Applications</div>
+            <div class="table-meta" id="tMeta"></div>
+          </div>
+          <div style="display:flex;gap:.38rem;">
+            <button class="btn btn-ghost btn-sm" onclick="sortBy('date')">↕ Date</button>
+            <button class="btn btn-ghost btn-sm" onclick="sortBy('company')">↕ A–Z</button>
+            <button class="btn btn-ghost btn-sm" onclick="sortBy('status')">↕ Status</button>
+          </div>
+        </div>
+        <div class="col-headers">
+          <div class="col-h">Company</div>
+          <div class="col-h ch-pos">Position</div>
+          <div class="col-h">Status</div>
+          <div class="col-h ch-date">Applied On</div>
+          <div class="col-h"></div>
+        </div>
+        <div class="app-list" id="appList"></div>
+        <div class="empty-state" id="emptyState" style="display:none">
+          <div class="ei">📭</div>
+          <p>No applications yet.<br/>Fill the form to start tracking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="ctxMenu">
+  <button onclick="ctxEdit()">✏️ Edit</button>
+  <button onclick="ctxExpand()">🔍 Details</button>
+  <button onclick="ctxResume()">📄 Resume</button>
+  <div class="sep"></div>
+  <button onclick="ctxDelete()" style="color:var(--danger)">🗑 Delete</button>
+</div>
+<div class="overlay" id="setupModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-title">⚙ Sync & Storage</div>
+    <div style="background:rgba(92,115,242,.08);border:1px solid rgba(92,115,242,.2);border-radius:10px;padding:.84rem .98rem;font-size:.79rem;color:var(--indigo2);line-height:1.75;margin-bottom:.85rem;">
+      Your data is saved locally in your browser (<strong>localStorage</strong>) and persists across page refreshes automatically.<br/><br/>
+      If you have Claude's storage API available, pressing <strong>↑ Sync</strong> will also back up to the cloud.
+    </div>
+    <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:.84rem .98rem;font-size:.79rem;color:var(--gold2);line-height:1.75;">
+      <strong>Export:</strong> Use <strong>↓ CSV</strong> to download all your applications as a spreadsheet at any time.
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('setupModal')">Close</button>
+      <button class="btn btn-primary" onclick="manualSync();closeModal('setupModal')">↑ Sync Now</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="editModal">
+  <div class="modal wide">
+    <div class="modal-title">✏️ Edit Application</div>
+    <div class="mgrid" id="editGrid"></div>
+    <div id="editResumeSection" style="margin-top:.75rem;"></div>
+    <div id="editAddons" style="margin-top:.75rem;"></div>
+    <div id="editQASection" style="margin-top:.75rem;"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="resumeModal">
+  <div class="modal wide" style="max-width:800px;">
+    <div class="modal-title" id="resumeTitle">📄 Resume</div>
+    <div id="resumeContent"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('resumeModal')">Close</button>
+      <button class="btn btn-primary" id="resumeDownloadBtn">⬇ Download</button>
+    </div>
+  </div>
+</div>
+<div id="toast"><span class="tdot" id="tdot"></span><span id="tmsg"></span></div>
+<script>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let apps=[], cfg={statsVis:{total:true,pipeline:true,week:false,interview:false,offer:false,rejected:false},lastSync:null};
+let filterStatus='All', sortKey='date', sortAsc=false, editIdx=null, ctxIdx=null;
+let qaCounter=0, currentResume=null;
+let editResumeAction=null;
+let editNewResume=null;
+const APPS_KEY='jtp_apps_v3', CFG_KEY='jtp_cfg_v3';
+const STATUSES=['Applied','Screening','Interview','Offer','Rejected','Ghosted','Withdrawn'];
+
+/* ══════════════════════════════════════════
+   STORAGE  — localStorage is always primary;
+             window.storage (Claude API) is
+             an optional cloud sync layer.
+══════════════════════════════════════════ */
+async function loadData(){
+  // 1. Always load from localStorage first — this is the reliable source of truth
+  try{
+    const a=localStorage.getItem(APPS_KEY);
+    const c=localStorage.getItem(CFG_KEY);
+    if(a) apps=JSON.parse(a);
+    if(c) cfg=Object.assign(cfg,JSON.parse(c));
+    setSS('ok','Local ✓');
+  }catch(e){ console.warn('localStorage read failed',e); }
+
+  // 2. Optionally sync from cloud (only overrides if cloud has data)
+  if(typeof window.storage !== 'undefined'){
+    try{
+      const [ar,cr]=await Promise.all([
+        window.storage.get(APPS_KEY),
+        window.storage.get(CFG_KEY)
+      ]);
+      if(ar?.value){ apps=JSON.parse(ar.value); }
+      if(cr?.value){ cfg=Object.assign(cfg,JSON.parse(cr.value)); }
+      // Mirror cloud data back to localStorage to keep them in sync
+      localStorage.setItem(APPS_KEY,JSON.stringify(apps));
+      localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
+      setSS('ok','Synced ✓');
+    }catch(e){ /* cloud unavailable — localStorage data is still valid */ }
+  }
+}
+
+async function saveData(){
+  setSS('syncing','Saving…');
+
+  // 1. Always save to localStorage — never skipped
+  try{
+    localStorage.setItem(APPS_KEY,JSON.stringify(apps));
+    localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
+    setSS('ok','Saved ✓');
+  }catch(e){ console.warn('localStorage write failed',e); }
+
+  // 2. Also try cloud sync if available
+  if(typeof window.storage !== 'undefined'){
+    try{
+      await Promise.all([
+        window.storage.set(APPS_KEY,JSON.stringify(apps)),
+        window.storage.set(CFG_KEY,JSON.stringify(cfg))
+      ]);
+      setSS('ok','Synced ✓');
+    }catch(e){ /* cloud unavailable — data is safe in localStorage */ }
+  }
+}
+
+async function manualSync(){
+  const btn=document.getElementById('syncBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinning">↻</span>';
+  await loadData(); applyStatsVis(); renderStats(); renderList(); checkFollowUps();
+  btn.disabled=false; btn.textContent='↑ Sync';
+  toast('Data refreshed','success');
+}
+
+function setSS(state,lbl){
+  const d=document.getElementById('syncDot');
+  d.className='sync-dot'+(state==='ok'?' ok':state==='err'?' err':state==='syncing'?' syncing':'');
+  document.getElementById('syncLbl').textContent=lbl;
+}
+
+/* ══════════════════════════════════════════
+   RESUME — main form
+══════════════════════════════════════════ */
+function handleResume(inp){
+  const f=inp.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    currentResume={name:f.name,data:e.target.result};
+    document.getElementById('f_resume_name').textContent=f.name;
+    document.getElementById('f_resume_clear').style.display='inline';
+  };
+  reader.readAsDataURL(f);
+}
+function clearResume(){
+  currentResume=null;
+  document.getElementById('f_resume').value='';
+  document.getElementById('f_resume_name').textContent='';
+  document.getElementById('f_resume_clear').style.display='none';
+}
+
+/* ══════════════════════════════════════════
+   RESUME — view modal
+══════════════════════════════════════════ */
+function viewResume(idx){
+  const a=apps[idx]; if(!a?.resume) return toast('No resume attached','warn');
+  document.getElementById('resumeTitle').textContent='📄 '+esc(a.resume.name);
+  const rc=document.getElementById('resumeContent');
+  if(a.resume.data.includes('pdf')){
+    rc.innerHTML=`<iframe class="resume-viewer" src="${a.resume.data}"></iframe>`;
+  } else if(a.resume.data.startsWith('data:image')){
+    rc.innerHTML=`<img src="${a.resume.data}" style="max-width:100%;border-radius:8px;"/>`;
+  } else {
+    rc.innerHTML=`<p style="color:var(--text2);font-size:.81rem;padding:1rem 0;">Preview unavailable — use the download button.</p>`;
+  }
+  document.getElementById('resumeDownloadBtn').onclick=()=>{
+    const a2=document.createElement('a'); a2.href=a.resume.data; a2.download=a.resume.name; a2.click();
+  };
+  openModal('resumeModal');
+}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+const STAT_DEFS=[
+  {key:'total',    label:'Total Applied', c:'var(--indigo)',  fn:()=>apps.length, sub:()=>'all time'},
+  {key:'pipeline', label:'In Pipeline',   c:'var(--teal)',    fn:()=>apps.filter(a=>!['Rejected','Offer','Withdrawn'].includes(a.status)).length, sub:()=>'active'},
+  {key:'week',     label:'This Week',     c:'var(--gold)',    fn:()=>{const d=new Date();d.setDate(d.getDate()-6);return apps.filter(a=>a.date>=d.toISOString().split('T')[0]).length;}, sub:()=>'last 7 days'},
+  {key:'interview',label:'Interviews',    c:'var(--gold2)',   fn:()=>apps.filter(a=>a.status==='Interview').length, sub:()=>{const n=apps.filter(a=>a.status==='Interview').length,t=apps.length;return t?Math.round(n/t*100)+'% rate':'0%';}},
+  {key:'offer',    label:'Offers 🎉',     c:'var(--green2)',  fn:()=>apps.filter(a=>a.status==='Offer').length,     sub:()=>{const n=apps.filter(a=>a.status==='Offer').length,t=apps.length;return t?Math.round(n/t*100)+'% rate':'0%';}},
+  {key:'rejected', label:'Rejected',      c:'var(--danger)',  fn:()=>apps.filter(a=>a.status==='Rejected').length,  sub:()=>'applications'},
+];
+function renderStats(){
+  document.getElementById('statsGrid').innerHTML=STAT_DEFS
+    .filter(d=>cfg.statsVis[d.key])
+    .map(d=>`<div class="scard" style="--c:${d.c}"><div class="scard-label">${d.label}</div><div class="scard-value">${d.fn()}</div><div class="scard-sub">${d.sub()}</div></div>`).join('');
+}
+function applyStatsVis(){
+  STAT_DEFS.forEach(d=>{const el=document.getElementById('sv_'+d.key);if(el) el.checked=!!cfg.statsVis[d.key];});
+}
+function saveStatsVis(){
+  STAT_DEFS.forEach(d=>{cfg.statsVis[d.key]=document.getElementById('sv_'+d.key)?.checked||false;});
+  renderStats(); saveData();
+}
+function toggleStatsMenu(e){e&&e.stopPropagation();document.getElementById('statsPopover').classList.toggle('open');}
+document.addEventListener('click',()=>document.getElementById('statsPopover').classList.remove('open'));
+
+/* ══════════════════════════════════════════
+   ADDONS
+══════════════════════════════════════════ */
+function toggleAddon(){
+  document.getElementById('addonToggle').classList.toggle('open');
+  document.getElementById('addonBody').classList.toggle('open');
+}
+function toggleAddonField(fieldId,chk){
+  document.getElementById(fieldId).classList.toggle('enabled',chk.checked);
+}
+
+/* ══════════════════════════════════════════
+   Q&A
+══════════════════════════════════════════ */
+function addQAPair(q='',a=''){
+  const id=qaCounter++;
+  const c=document.getElementById('qaContainer');
+  const div=document.createElement('div'); div.className='qa-pair ri'; div.id='qap_'+id;
+  div.innerHTML=`
+    <div class="field"><label>Question</label><input type="text" id="qq_${id}" value="${esc(q)}" placeholder="e.g. Notice period?"/></div>
+    <div class="field"><label>Answer <span style="float:right;font-size:.58rem;color:var(--muted);cursor:pointer;" onclick="document.getElementById('qap_${id}').remove()">✕ remove</span></label>
+    <input type="text" id="qa_${id}_ans" value="${esc(a)}" placeholder="Your answer…"/></div>`;
+  c.appendChild(div);
+}
+function collectQAs(){
+  const pairs=[];
+  document.querySelectorAll('#qaContainer .qa-pair').forEach(div=>{
+    const n=div.id.replace('qap_','');
+    const q=document.getElementById(`qq_${n}`)?.value?.trim()||'';
+    const a=document.getElementById(`qa_${n}_ans`)?.value?.trim()||'';
+    if(q||a) pairs.push({q,a});
+  });
+  return pairs;
+}
+
+/* ══════════════════════════════════════════
+   ADD APP
+══════════════════════════════════════════ */
+async function addApp(){
+  const co=gv('f_co'),pos=gv('f_pos');
+  if(!co){toast('Company name required','warn');document.getElementById('f_co').focus();return;}
+  if(!pos){toast('Position required','warn');document.getElementById('f_pos').focus();return;}
+  const app={
+    id:Date.now(),company:co,position:pos,location:gv('f_loc'),
+    date:document.getElementById('f_date').value||today(),
+    status:gv('f_status'),source:gv('f_src'),link:gv('f_link'),
+    notes:gv('f_notes'),salary:gv('f_sal'),resume:currentResume||null,
+    type:document.getElementById('chk_type').checked?gv('f_type'):'',
+    followup:document.getElementById('chk_fu').checked?gv('f_fu'):'',
+    round:document.getElementById('chk_round').checked?gv('f_round'):'',
+    recruiter:document.getElementById('chk_rec').checked?gv('f_rec'):'',
+    qa:collectQAs(),
+  };
+  apps.unshift(app); await saveData();
+  clearForm(); renderStats(); renderList(); checkFollowUps();
+  toast('Application saved ✓','success');
+}
+function clearForm(){
+  ['f_co','f_pos','f_loc','f_sal','f_link','f_rec','f_notes','f_fu'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('f_date').valueAsDate=new Date();
+  ['f_status','f_type','f_round'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  document.getElementById('f_src').value='';
+  document.getElementById('qaContainer').innerHTML=''; qaCounter=0;
+  clearResume();
+  colorFormStatus();
+  ['chk_type','chk_fu','chk_round','chk_rec'].forEach(id=>{
+    const chk=document.getElementById(id);
+    if(chk){chk.checked=false;document.getElementById('af_'+id.replace('chk_','')).classList.remove('enabled');}
+  });
+}
+
+/* ══════════════════════════════════════════
+   DELETE
+══════════════════════════════════════════ */
+async function delApp(idx){
+  if(!confirm('Delete this application?')) return;
+  apps.splice(idx,1); await saveData(); renderStats(); renderList();
+  toast('Deleted','warn');
+}
+
+/* ══════════════════════════════════════════
+   FILTER / SORT
+══════════════════════════════════════════ */
+function setFilter(s,el){
+  filterStatus=s;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); renderList();
+}
+function sortBy(k){if(sortKey===k) sortAsc=!sortAsc; else{sortKey=k;sortAsc=false;} renderList();}
+
+/* ══════════════════════════════════════════
+   RENDER LIST
+══════════════════════════════════════════ */
+function renderList(){
+  const q=document.getElementById('searchQ').value.toLowerCase();
+  let list=apps.map((a,i)=>({...a,_i:i}))
+    .filter(a=>(filterStatus==='All'||a.status===filterStatus)&&(!q||JSON.stringify(a).toLowerCase().includes(q)));
+  list.sort((a,b)=>{const av=a[sortKey]||'',bv=b[sortKey]||'';return sortAsc?av.localeCompare(bv):bv.localeCompare(av);});
+  document.getElementById('tMeta').textContent=`${list.length} of ${apps.length} application${apps.length!==1?'s':''}`;
+  const cont=document.getElementById('appList');
+  const empty=document.getElementById('emptyState');
+  if(!list.length){cont.innerHTML='';empty.style.display='flex';return;}
+  empty.style.display='none';
+  cont.innerHTML=list.map(a=>{
+    const stKey=(a.status||'applied').toLowerCase();
+    const opts=STATUSES.map(s=>`<option${a.status===s?' selected':''}>${s}</option>`).join('');
+    return `<div class="app-row ri" oncontextmenu="showCtx(event,${a._i})">
+      <div class="app-summary" onclick="toggleDetail(${a._i})">
+        <div class="app-co" title="${esc(a.company)}">${esc(a.company)}</div>
+        <div class="app-pos" title="${esc(a.position)}">${esc(a.position)}</div>
+        <div class="status-cell st-${stKey}">
+          <select class="status-sel" onchange="quickStatus(${a._i},this.value)" onclick="event.stopPropagation()">${opts}</select>
+        </div>
+        <div class="app-date">${a.date||'—'}</div>
+        <div class="expand-col">
+          <button class="expand-btn" id="expbtn_${a._i}" onclick="event.stopPropagation();toggleDetail(${a._i})">⊕ Details</button>
+        </div>
+      </div>
+      <div class="app-detail" id="det_${a._i}">${buildDetail(a)}</div>
+    </div>`;
+  }).join('');
+}
+function buildDetail(a){
+  const fields=[
+    {l:'Location',    v:esc(a.location||'—')},
+    {l:'Salary',      v:esc(a.salary||'—')},
+    {l:'Source',      v:esc(a.source||'—')},
+    {l:'Job Type',    v:esc(a.type||'—')},
+    {l:'Round',       v:esc(a.round||'—')},
+    {l:'Follow-up',   v:esc(a.followup||'—')},
+    {l:'Recruiter',   v:esc(a.recruiter||'—')},
+    {l:'Job Link',    v:a.link?`<a href="${esc(a.link)}" target="_blank" onclick="event.stopPropagation()">🔗 Open</a>`:'—'},
+    {l:'Resume',      v:a.resume?`<span style="color:var(--teal2);cursor:pointer;" onclick="viewResume(${a._i});event.stopPropagation()">📄 ${esc(a.resume.name)}</span>`:'—'},
+  ];
+  const grid=`<div class="detail-grid">${fields.map(f=>`<div class="detail-item"><div class="dil">${f.l}</div><div class="div_">${f.v}</div></div>`).join('')}</div>`;
+  const notes=a.notes?`<div style="margin-bottom:.68rem;"><div class="dil" style="margin-bottom:.28rem;">Notes / Description</div><div class="detail-notes">${esc(a.notes)}</div></div>`:'';
+  const qa=(a.qa?.length)?`<div class="detail-qa">${a.qa.map((p,i)=>`<div class="dqa-item"><div class="dqa-q">Q${i+1}: ${esc(p.q)}</div><div class="dqa-a">${esc(p.a||'—')}</div></div>`).join('')}</div>`:'';
+  const acts=`<div class="detail-actions">
+    <button class="btn btn-ghost btn-sm" onclick="openEdit(${a._i});event.stopPropagation()">✏️ Edit</button>
+    ${a.resume?`<button class="btn btn-ghost btn-sm" onclick="viewResume(${a._i});event.stopPropagation()">📄 Resume</button>`:''}
+    <button class="btn btn-danger btn-sm" onclick="delApp(${a._i});event.stopPropagation()">🗑 Delete</button>
+  </div>`;
+  return grid+notes+qa+acts;
+}
+function toggleDetail(idx){
+  const det=document.getElementById('det_'+idx);
+  const btn=document.getElementById('expbtn_'+idx);
+  if(!det) return;
+  const open=det.classList.toggle('open');
+  if(btn) btn.textContent=open?'⊖ Close':'⊕ Details';
+}
+
+/* ══════════════════════════════════════════
+   QUICK STATUS
+══════════════════════════════════════════ */
+async function quickStatus(idx,val){
+  apps[idx].status=val; renderList(); renderStats();
+  await saveData(); toast('Status updated','success');
+}
+
+/* ══════════════════════════════════════════
+   CONTEXT MENU
+══════════════════════════════════════════ */
+function showCtx(e,idx){
+  e.preventDefault(); ctxIdx=idx;
+  const m=document.getElementById('ctxMenu'); m.style.display='block';
+  let x=e.clientX,y=e.clientY;
+  if(x+162>window.innerWidth) x=window.innerWidth-166;
+  if(y+145>window.innerHeight) y=window.innerHeight-150;
+  m.style.left=x+'px'; m.style.top=y+'px';
+}
+function hideCtx(){document.getElementById('ctxMenu').style.display='none';}
+document.addEventListener('click',hideCtx);
+function ctxEdit(){hideCtx();if(ctxIdx!==null) openEdit(ctxIdx);}
+function ctxExpand(){hideCtx();if(ctxIdx!==null) toggleDetail(ctxIdx);}
+function ctxResume(){hideCtx();if(ctxIdx!==null) viewResume(ctxIdx);}
+function ctxDelete(){hideCtx();if(ctxIdx!==null) delApp(ctxIdx);}
+
+/* ══════════════════════════════════════════
+   EDIT MODAL
+══════════════════════════════════════════ */
+function openEdit(idx){
+  editIdx=idx;
+  editResumeAction=null;
+  editNewResume=null;
+  const a=apps[idx];
+  const rounds=['','Phone Screen','Technical','HR Round','Case Study','Final Round','Offer Stage'];
+  const sources=['','LinkedIn','Naukri','Indeed','Glassdoor','Company Website','Referral','AngelList','Internshala','Other'];
+  const types=['Full-time','Part-time','Contract','Internship','Freelance'];
+  document.getElementById('editGrid').innerHTML=`
+    ${mf('Company *','e_co','text',a.company)}
+    ${mf('Position *','e_pos','text',a.position)}
+    ${mf('Location','e_loc','text',a.location)}
+    ${mf('Applied On','e_date','date',a.date)}
+    <div class="field"><label>Status</label><div class="status-cell st-${(a.status||'applied').toLowerCase()}" id="e_status_wrap" style="border-radius:8px;overflow:hidden;"><select id="e_status" class="status-sel" onchange="colorEditStatus()" style="width:100%;padding:.52rem .84rem;font-size:.82rem;font-weight:500;">${STATUSES.map(s=>`<option${a.status===s?' selected':''}>${s}</option>`).join('')}</select></div></div>
+    <div class="field"><label>Source</label><select id="e_src">${sources.map(s=>`<option${(a.source||'')==s?' selected':''}>${s}</option>`).join('')}</select></div>
+    ${mf('Salary','e_sal','text',a.salary)}
+    ${mf('Job Link','e_link','url',a.link)}
+    <div class="field full"><label>Notes / Description</label><textarea id="e_notes" style="min-height:65px">${esc(a.notes||'')}</textarea></div>`;
+  renderEditResumeSection(a);
+  document.getElementById('editAddons').innerHTML=`
+    <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:500;margin-bottom:.46rem;">Additional Fields</div>
+    ${eaRow('ea_type','eaf_type','Job Type',`<select id="e_type_sel">${types.map(t=>`<option${(a.type||'')==t?' selected':''}>${t}</option>`).join('')}</select>`,!!a.type)}
+    ${eaRow('ea_fu','eaf_fu','Follow-up Date',`<input type="date" id="e_fu" value="${esc(a.followup||'')}"/>`,!!a.followup)}
+    ${eaRow('ea_round','eaf_round','Interview Round',`<select id="e_round_sel">${rounds.map(r=>`<option${(a.round||'')==r?' selected':''}>${r}</option>`).join('')}</select>`,!!a.round)}
+    ${eaRow('ea_rec','eaf_rec','Recruiter',`<input type="text" id="e_rec" value="${esc(a.recruiter||'')}" placeholder="Name · email"/>`,!!a.recruiter)}`;
+  ['ea_type','ea_fu','ea_round','ea_rec'].forEach(id=>{
+    const chk=document.getElementById(id);
+    if(chk) chk.addEventListener('change',function(){document.getElementById('eaf_'+id.replace('ea_','')).classList.toggle('enabled',this.checked);});
+  });
+  let eqc=0;
+  document.getElementById('editQASection').innerHTML=`
+    <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:500;margin-bottom:.42rem;">Other Questions</div>
+    <div id="editQAContainer"></div>
+    <span class="add-qa-btn" onclick="addEQA()">＋ Add Question</span>`;
+  window.addEQA=(q='',ans='')=>{
+    const id=eqc++;
+    const c=document.getElementById('editQAContainer');
+    const div=document.createElement('div'); div.className='qa-pair'; div.id='eqap_'+id;
+    div.innerHTML=`<div class="field"><label>Question</label><input type="text" id="eqq_${id}" value="${esc(q)}" placeholder="Question…"/></div>
+      <div class="field"><label>Answer <span style="float:right;font-size:.58rem;color:var(--muted);cursor:pointer;" onclick="document.getElementById('eqap_${id}').remove()">✕</span></label>
+      <input type="text" id="eqa_${id}_ans" value="${esc(ans)}" placeholder="Answer…"/></div>`;
+    c.appendChild(div);
+  };
+  (a.qa||[]).forEach(p=>window.addEQA(p.q,p.a));
+  openModal('editModal');
+  setTimeout(colorEditStatus, 10);
+}
+function renderEditResumeSection(a){
+  const sec=document.getElementById('editResumeSection');
+  const hasResume=!!a.resume;
+  if(hasResume){
+    sec.innerHTML=`
+      <div class="resume-edit-section">
+        <label class="section-lbl">Resume</label>
+        <div class="resume-current">
+          <span>📄</span>
+          <span class="rc-name">${esc(a.resume.name)}</span>
+          <button class="btn btn-ghost btn-sm" onclick="viewResume(editIdx)">👁 Preview</button>
+        </div>
+        <div class="resume-actions">
+          <input type="file" id="er_file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="display:none" onchange="editResumeReplace(this)"/>
+          <label class="btn btn-ghost btn-sm" for="er_file" style="cursor:pointer;">🔄 Replace Resume</label>
+          <button class="btn btn-ghost btn-sm" onclick="editResumeAdd()" title="Attach another file">＋ Add Another</button>
+          <button class="btn btn-danger btn-sm" onclick="editResumeDelete()">🗑 Remove Resume</button>
+        </div>
+        <div id="er_preview" style="font-size:.75rem;color:var(--teal2);margin-top:.2rem;"></div>
+      </div>`;
+  } else {
+    sec.innerHTML=`
+      <div class="resume-edit-section">
+        <label class="section-lbl">Resume</label>
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;">No resume attached.</div>
+        <div class="resume-actions">
+          <input type="file" id="er_file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="display:none" onchange="editResumeReplace(this)"/>
+          <label class="btn btn-ghost btn-sm" for="er_file" style="cursor:pointer;">📎 Attach Resume</label>
+        </div>
+        <div id="er_preview" style="font-size:.75rem;color:var(--teal2);margin-top:.2rem;"></div>
+      </div>`;
+  }
+}
+function editResumeReplace(inp){
+  const f=inp.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    editNewResume={name:f.name,data:e.target.result};
+    editResumeAction='replace';
+    document.getElementById('er_preview').textContent='✓ New file ready: '+f.name;
+  };
+  reader.readAsDataURL(f);
+}
+function editResumeAdd(){ document.getElementById('er_file').click(); }
+function editResumeDelete(){
+  if(!confirm('Remove the attached resume?')) return;
+  editResumeAction='delete';
+  editNewResume=null;
+  document.getElementById('er_preview').textContent='Resume will be removed on save.';
+}
+function eaRow(chkId,fieldId,label,inputHtml,enabled){
+  return `<div class="edit-addon-row">
+    <input type="checkbox" class="edit-addon-chk" id="${chkId}" ${enabled?'checked':''}/>
+    <div class="edit-addon-field${enabled?' enabled':''}" id="${fieldId}">
+      <div class="field"><label>${label}</label>${inputHtml}</div>
+    </div>
+  </div>`;
+}
+async function saveEdit(){
+  if(apps[editIdx]==null) return;
+  const editQAs=[];
+  document.querySelectorAll('#editQAContainer .qa-pair').forEach(div=>{
+    const n=div.id.replace('eqap_','');
+    const q=document.getElementById(`eqq_${n}`)?.value?.trim()||'';
+    const a=document.getElementById(`eqa_${n}_ans`)?.value?.trim()||'';
+    if(q||a) editQAs.push({q,a});
+  });
+  let finalResume=apps[editIdx].resume;
+  if(editResumeAction==='replace' && editNewResume) finalResume=editNewResume;
+  else if(editResumeAction==='delete') finalResume=null;
+  Object.assign(apps[editIdx],{
+    company:gv('e_co'),position:gv('e_pos'),location:gv('e_loc'),date:gv('e_date'),
+    status:gv('e_status'),source:gv('e_src'),salary:gv('e_sal'),link:gv('e_link'),
+    notes:document.getElementById('e_notes')?.value?.trim()||'',
+    type:document.getElementById('ea_type')?.checked?(document.getElementById('e_type_sel')?.value||''):'',
+    followup:document.getElementById('ea_fu')?.checked?gv('e_fu'):'',
+    round:document.getElementById('ea_round')?.checked?(document.getElementById('e_round_sel')?.value||''):'',
+    recruiter:document.getElementById('ea_rec')?.checked?gv('e_rec'):'',
+    resume:finalResume,
+    qa:editQAs,
+  });
+  await saveData(); renderStats(); renderList(); closeModal('editModal');
+  toast('Changes saved ✓','success');
+}
+
+/* ══════════════════════════════════════════
+   FOLLOW-UPS
+══════════════════════════════════════════ */
+function checkFollowUps(){
+  const td=today();
+  const due=apps.filter(a=>a.followup===td&&!['Offer','Rejected','Withdrawn'].includes(a.status));
+  const late=apps.filter(a=>a.followup&&a.followup<td&&!['Offer','Rejected','Withdrawn'].includes(a.status));
+  const s=document.getElementById('fuStrip');
+  if(due.length||late.length){
+    const parts=[];
+    if(due.length) parts.push(`${due.length} follow-up${due.length>1?'s':''} due today`);
+    if(late.length) parts.push(`${late.length} overdue`);
+    s.style.display='block'; s.innerHTML=`🔔 <strong>${parts.join(' · ')}</strong>`;
+  } else s.style.display='none';
+}
+
+/* ══════════════════════════════════════════
+   CSV EXPORT
+══════════════════════════════════════════ */
+function exportCSV(){
+  const h=['ID','Company','Position','Location','Type','Date','Status','Round','Follow-up','Salary','Source','Link','Recruiter','Resume','Notes','Q&A'];
+  const rows=apps.map(a=>{
+    const qa=(a.qa||[]).map(p=>`Q:${p.q}|A:${p.a}`).join('; ');
+    return [a.id,a.company,a.position,a.location,a.type,a.date,a.status,a.round,a.followup,a.salary,a.source,a.link,a.recruiter,a.resume?a.resume.name:'',a.notes,qa]
+      .map(v=>`"${String(v||'').replace(/"/g,'""')}"`);
+  });
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const el=document.createElement('a');
+  el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  el.download=`JobTrack_${today()}.csv`; el.click();
+  toast('CSV exported ✓','success');
+}
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function today(){return new Date().toISOString().split('T')[0];}
+function gv(id){return document.getElementById(id)?.value?.trim()||'';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function mf(label,id,type,val){return `<div class="field"><label>${label}</label><input type="${type}" id="${id}" value="${esc(val||'')}"/></div>`;}
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o) o.classList.remove('open');}));
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let _tt;
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  const c={success:'var(--green2)',warn:'var(--gold2)',danger:'var(--danger)',info:'var(--indigo2)'};
+  document.getElementById('tdot').style.background=c[type]||c.success;
+  document.getElementById('tmsg').textContent=msg;
+  t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ══════════════════════════════════════════
+   STATUS COLOR HELPERS
+══════════════════════════════════════════ */
+const ST_CLASSES=['applied','screening','interview','offer','rejected','ghosted','withdrawn'];
+function applyStatusColor(wrapId, val){
+  const wrap=document.getElementById(wrapId);
+  if(!wrap) return;
+  ST_CLASSES.forEach(c=>wrap.classList.remove('st-'+c));
+  wrap.classList.add('st-'+(val||'applied').toLowerCase());
+}
+function colorFormStatus(){ applyStatusColor('f_status_wrap', document.getElementById('f_status').value); }
+function colorEditStatus(){ applyStatusColor('e_status_wrap', document.getElementById('e_status')?.value); }
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('datechip').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  document.getElementById('f_date').valueAsDate=new Date();
+  colorFormStatus();
+  setSS('syncing','Loading…');
+  await loadData();
+  applyStatsVis(); renderStats(); renderList(); checkFollowUps();
+});
+</script>
+<!-- SIMPLEX NOISE (Jonas Wagner, MIT licence) -->
+<script>
+(function(){
+'use strict';
+var F2=.5*(Math.sqrt(3)-1),G2=(3-Math.sqrt(3))/6,F3=1/3,G3=1/6;
+function SimplexNoise(r){
+  var rnd=typeof r=='function'?r:r?alea(r):Math.random;
+  this.p=buildPerm(rnd);
+  this.perm=new Uint8Array(512);
+  this.pm12=new Uint8Array(512);
+  for(var i=0;i<512;i++){this.perm[i]=this.p[i&255];this.pm12[i]=this.perm[i]%12;}
+}
+SimplexNoise.prototype={
+  g3:new Float32Array([1,1,0,-1,1,0,1,-1,0,-1,-1,0,1,0,1,-1,0,1,1,0,-1,-1,0,-1,0,1,1,0,-1,1,0,1,-1,0,-1,-1]),
+  noise2D:function(xin,yin){
+    var pm=this.pm12,p=this.perm,g=this.g3,n0=0,n1=0,n2=0;
+    var s=(xin+yin)*F2,i=Math.floor(xin+s),j=Math.floor(yin+s);
+    var t=(i+j)*G2,X0=i-t,Y0=j-t,x0=xin-X0,y0=yin-Y0;
+    var i1=x0>y0?1:0,j1=x0>y0?0:1;
+    var x1=x0-i1+G2,y1=y0-j1+G2,x2=x0-1+2*G2,y2=y0-1+2*G2;
+    var ii=i&255,jj=j&255;
+    var t0=.5-x0*x0-y0*y0;
+    if(t0>=0){var gi0=pm[ii+p[jj]]*3;t0*=t0;n0=t0*t0*(g[gi0]*x0+g[gi0+1]*y0);}
+    var t1=.5-x1*x1-y1*y1;
+    if(t1>=0){var gi1=pm[ii+i1+p[jj+j1]]*3;t1*=t1;n1=t1*t1*(g[gi1]*x1+g[gi1+1]*y1);}
+    var t2=.5-x2*x2-y2*y2;
+    if(t2>=0){var gi2=pm[ii+1+p[jj+1]]*3;t2*=t2;n2=t2*t2*(g[gi2]*x2+g[gi2+1]*y2);}
+    return 70*(n0+n1+n2);
+  },
+  noise3D:function(xin,yin,zin){
+    var pm=this.pm12,p=this.perm,g=this.g3;
+    var s=(xin+yin+zin)*F3,i=Math.floor(xin+s),j=Math.floor(yin+s),k=Math.floor(zin+s);
+    var t=(i+j+k)*G3,X0=i-t,Y0=j-t,Z0=k-t;
+    var x0=xin-X0,y0=yin-Y0,z0=zin-Z0;
+    var i1,j1,k1,i2,j2,k2;
+    if(x0>=y0){if(y0>=z0){i1=1;j1=0;k1=0;i2=1;j2=1;k2=0;}
+    else if(x0>=z0){i1=1;j1=0;k1=0;i2=1;j2=0;k2=1;}
+    else{i1=0;j1=0;k1=1;i2=1;j2=0;k2=1;}}
+    else{if(y0<z0){i1=0;j1=0;k1=1;i2=0;j2=1;k2=1;}
+    else if(x0<z0){i1=0;j1=1;k1=0;i2=0;j2=1;k2=1;}
+    else{i1=0;j1=1;k1=0;i2=1;j2=1;k2=0;}}
+    var x1=x0-i1+G3,y1=y0-j1+G3,z1=z0-k1+G3;
+    var x2=x0-i2+2*G3,y2=y0-j2+2*G3,z2=z0-k2+2*G3;
+    var x3=x0-1+3*G3,y3=y0-1+3*G3,z3=z0-1+3*G3;
+    var ii=i&255,jj=j&255,kk=k&255,n0=0,n1=0,n2=0,n3=0;
+    var t0=.6-x0*x0-y0*y0-z0*z0;
+    if(t0>=0){var gi0=pm[ii+p[jj+p[kk]]]*3;t0*=t0;n0=t0*t0*(g[gi0]*x0+g[gi0+1]*y0+g[gi0+2]*z0);}
+    var t1=.6-x1*x1-y1*y1-z1*z1;
+    if(t1>=0){var gi1=pm[ii+i1+p[jj+j1+p[kk+k1]]]*3;t1*=t1;n1=t1*t1*(g[gi1]*x1+g[gi1+1]*y1+g[gi1+2]*z1);}
+    var t2=.6-x2*x2-y2*y2-z2*z2;
+    if(t2>=0){var gi2=pm[ii+i2+p[jj+j2+p[kk+k2]]]*3;t2*=t2;n2=t2*t2*(g[gi2]*x2+g[gi2+1]*y2+g[gi2+2]*z2);}
+    var t3=.6-x3*x3-y3*y3-z3*z3;
+    if(t3>=0){var gi3=pm[ii+1+p[jj+1+p[kk+1]]]*3;t3*=t3;n3=t3*t3*(g[gi3]*x3+g[gi3+1]*y3+g[gi3+2]*z3);}
+    return 32*(n0+n1+n2+n3);
+  }
+};
+function buildPerm(rnd){var p=new Uint8Array(256);for(var i=0;i<256;i++)p[i]=i;for(var i=0;i<255;i++){var r=i+~~(rnd()*(256-i)),a=p[i];p[i]=p[r];p[r]=a;}return p;}
+function alea(){var s0=0,s1=0,s2=0,c=1,mash=masher();
+  s0=mash(' ');s1=mash(' ');s2=mash(' ');
+  for(var i=0;i<arguments.length;i++){s0-=mash(arguments[i]);if(s0<0)s0+=1;s1-=mash(arguments[i]);if(s1<0)s1+=1;s2-=mash(arguments[i]);if(s2<0)s2+=1;}
+  mash=null;
+  return function(){var t=2091639*s0+c*2.3283064365386963e-10;s0=s1;s1=s2;return s2=t-(c=t|0);};}
+function masher(){var n=0xefc8249d;return function(data){data=data.toString();for(var i=0;i<data.length;i++){n+=data.charCodeAt(i);var h=0.02519603282416938*n;n=h>>>0;h-=n;h*=n;n=h>>>0;h-=n;n+=h*0x100000000;}return(n>>>0)*2.3283064365386963e-10;};}
+window.SimplexNoise=SimplexNoise;
+})();
+</script>
+<!-- ALCA CANVAS FRAMEWORK -->
+<script>
+(function(){
+const {abs,acos,asin,atan2,ceil,cos,floor,hypot,log,max,min,pow,round,sign,sin,sqrt,tan}=Math;
+const PI=Math.PI, TAU=PI*2, HALF_PI=PI*.5;
+window.PI=PI; window.TAU=TAU; window.HALF_PI=HALF_PI;
+window.cos=cos; window.sin=sin; window.abs=abs; window.sqrt=sqrt;
+window.floor=floor; window.ceil=ceil; window.round=round;
+window.min=min; window.max=max; window.pow=pow;
+function hsl(h,s,l,a=1){h=((h%360)+360)%360;return `hsl(${h} ${s}% ${l}% / ${a})`;}
+window.hsl=hsl;
+function map(n,a,b,c,d){return (n-a)*(d-c)/(b-a)+c;}
+function lerp(a,b,t=.5){return t*(b-a)+a;}
+function constrain(n,mn,mx){return max(mn,min(mx,n));}
+function random(lo=1,hi=null){
+  if(Array.isArray(lo))return lo[floor(Math.random()*lo.length)];
+  if(hi===null)return Math.random()*lo;
+  return Math.random()*(hi-lo)+lo;
+}
+window.map=map; window.lerp=lerp; window.constrain=constrain; window.random=random;
+let canvas=document.getElementById('canvas');
+if(!canvas){canvas=document.createElement('canvas');canvas.id='canvas';document.body.insertBefore(canvas,document.body.firstChild);}
+let ctx=canvas.getContext('2d',{desynchronized:true});
+window.canvas=canvas; window.ctx=ctx;
+let width,height,width_half,height_half;
+function _resize(){
+  width=canvas.width=window.innerWidth;
+  height=canvas.height=window.innerHeight;
+  width_half=width*.5; height_half=height*.5;
+  window.width=width; window.height=height;
+  window.width_half=width_half; window.height_half=height_half;
+  if('onResize' in window) window.onResize();
+}
+window.addEventListener('resize',_resize);
+let _last=null;
+window.canvasFrameDelta=0; window.frameCount=0;
+function _draw(ts){
+  window.canvasFrameDelta=ts-(_last??ts); _last=ts; window.frameCount++;
+  if('draw' in window) window.draw(ts);
+  requestAnimationFrame(_draw);
+}
+function push(){ctx.save();} function pop(){ctx.restore();}
+function translate(x,y){if(typeof x==='object'){ctx.translate(x.x,x.y);}else ctx.translate(x,y??x);}
+function scale(x,y=x){ctx.scale(x,y);}
+function rotate(a){ctx.rotate(a%TAU);}
+function clear(x,y,w,h){if(typeof x==='number')ctx.clearRect(x,y,w,h);else ctx.clearRect(0,0,width,height);}
+function background(c){push();ctx.fillStyle=typeof c==='string'?c:'#000';ctx.fillRect(0,0,width,height);pop();}
+function fillStyle(c){if(c!==undefined)ctx.fillStyle=c;return ctx.fillStyle;}
+function strokeStyle(c,lw){if(typeof c==='string')ctx.strokeStyle=c;if(typeof lw==='number')ctx.lineWidth=lw;return ctx.strokeStyle;}
+function fill(c){if(c!==undefined)fillStyle(c);ctx.fill();}
+function stroke(c){if(c!==undefined)strokeStyle(c);ctx.stroke();}
+function beginPath(){ctx.beginPath();}
+function closePath(){ctx.closePath();}
+function moveTo(x,y){if(typeof x==='object')ctx.moveTo(x.x,x.y);else ctx.moveTo(x,y);}
+function lineTo(x,y){if(typeof x==='object')ctx.lineTo(x.x,x.y);else ctx.lineTo(x,y);}
+function arc(x,y,r,s=0,e=TAU,ac=false){ctx.arc(x,y,r,s,e,ac);}
+function circle(x,y,r){ctx.moveTo(x+r,y);ctx.arc(x,y,r,0,TAU);}
+function rect(x,y,w,h,r=0){if(r)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);}
+function comp(t){ctx.globalCompositeOperation=t;}
+function globalAlpha(a){ctx.globalAlpha=a;}
+window.push=push;window.pop=pop;window.translate=translate;window.scale=scale;
+window.rotate=rotate;window.clear=clear;window.background=background;
+window.fillStyle=fillStyle;window.strokeStyle=strokeStyle;
+window.fill=fill;window.stroke=stroke;
+window.beginPath=beginPath;window.closePath=closePath;
+window.moveTo=moveTo;window.lineTo=lineTo;
+window.arc=arc;window.circle=circle;window.rect=rect;
+window.comp=comp;window.globalAlpha=globalAlpha;
+class Vector{
+  constructor(x=0,y=0,z=0){this.x=x;this.y=y;this.z=z;}
+  set(x,y,z=0){if(x instanceof Vector){this.x=x.x;this.y=x.y;this.z=x.z;}else{this.x=x;this.y=y??x;this.z=z;}return this;}
+  copy(){return new Vector(this.x,this.y,this.z);}
+  get _(){return this.copy();}
+  add(v){if(v instanceof Vector){this.x+=v.x;this.y+=v.y;}else{this.x+=v;this.y+=v;}return this;}
+  sub(v){if(v instanceof Vector){this.x-=v.x;this.y-=v.y;}else{this.x-=v;this.y-=v;}return this;}
+  mult(v){if(v instanceof Vector){this.x*=v.x;this.y*=v.y;}else{this.x*=v;this.y*=v;}return this;}
+  div(v){if(v instanceof Vector){this.x/=v.x;this.y/=v.y;}else{this.x/=v;this.y/=v;}return this;}
+  mag(){return sqrt(this.x*this.x+this.y*this.y);}
+  magSq(){return this.x*this.x+this.y*this.y;}
+  normalize(){const m=this.mag();return m>0?this.div(m):this;}
+  limit(mx){const msq=this.magSq();if(msq>mx*mx){this.normalize().mult(mx);}return this;}
+  dot(v){return this.x*(v.x??v)+this.y*(v.y??v);}
+  heading(){return atan2(this.y,this.x);}
+  rotate(a){const c=cos(a),s=sin(a),{x,y}=this;this.x=x*c-y*s;this.y=x*s+y*c;return this;}
+  dist(v){const dx=this.x-v.x,dy=this.y-v.y;return sqrt(dx*dx+dy*dy);}
+  lerp(v,t){this.x=lerp(this.x,v.x,t);this.y=lerp(this.y,v.y,t);return this;}
+  static fromAngle(a,m=1){return new Vector(cos(a)*m,sin(a)*m);}
+  static random2D(){return Vector.fromAngle(random(TAU));}
+  static lerp(a,b,t){return new Vector(lerp(a.x,b.x,t),lerp(a.y,b.y,t));}
+  static center(){return new Vector(window.width_half,window.height_half);}
+  get xy(){return[this.x,this.y];}
+}
+window.Vector=Vector;
+window.addEventListener('load',()=>{
+  _resize();
+  if('setup' in window) window.setup();
+  requestAnimationFrame(_draw);
+});
+})();
+</script>
+<!-- BACKGROUND SKETCH -->
+<script>
+window.canvasOptions={autoClear:false,drawAndStop:false};
+let noise,offscreen,offCtx;
+const SCALE=3,SPEED=0.00016,HUE_SPD=0.018,TRAIL=0.18;
+function setup(){
+  noise=new SimplexNoise();
+  offscreen=document.createElement('canvas');
+  offscreen.width=Math.ceil(window.innerWidth/SCALE);
+  offscreen.height=Math.ceil(window.innerHeight/SCALE);
+  offCtx=offscreen.getContext('2d');
+}
+function onResize(){
+  if(!offscreen)return;
+  offscreen.width=Math.ceil(width/SCALE);
+  offscreen.height=Math.ceil(height/SCALE);
+}
+function draw(ts){
+  const t=ts*SPEED,ow=offscreen.width,oh=offscreen.height;
+  offCtx.globalAlpha=TRAIL;
+  offCtx.fillStyle='#0a0c14';
+  offCtx.fillRect(0,0,ow,oh);
+  offCtx.globalAlpha=1;
+  const imgData=offCtx.createImageData(ow,oh);
+  const d=imgData.data;
+  for(let py=0;py<oh;py++){
+    for(let px=0;px<ow;px++){
+      const nx=px/ow,ny=py/oh;
+      const n1=noise.noise3D(nx*2.2,ny*2.2,t);
+      const n2=noise.noise3D(nx*4.4+5,ny*4.4+5,t*1.7);
+      const n=(n1*0.65+n2*0.35);
+      const hue=(nx*200+ny*80+t*18000*HUE_SPD+n*60+200)%360;
+      const saturation=70+n*30;
+      const lightness=10+(n*0.5+0.5)*22;
+      const h=((hue%360)+360)%360,s=saturation/100,l=lightness/100;
+      const a2=s*Math.min(l,1-l);
+      function ch(n2){const k=(n2+h/30)%12;return l-a2*Math.max(Math.min(k-3,9-k,1),-1);}
+      const idx=(py*ow+px)*4;
+      d[idx]=ch(0)*255;d[idx+1]=ch(8)*255;d[idx+2]=ch(4)*255;d[idx+3]=255;
+    }
+  }
+  offCtx.putImageData(imgData,0,0);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(offscreen,0,0,width,height);
+}
+</script>
+</body>
+</html>
