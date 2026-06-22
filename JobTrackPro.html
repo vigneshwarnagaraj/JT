@@ -66,6 +66,9 @@ body{
   overflow-y:auto;
   line-height:1.55;
 }
+/* ══════════════════════════════════════
+   CANVAS BACKGROUND (Alca + SimplexNoise)
+══════════════════════════════════════ */
 #canvas{
   position:fixed !important;
   top:0 !important; left:0 !important;
@@ -74,11 +77,14 @@ body{
   pointer-events:none !important;
   display:block;
 }
+/* dark scrim over canvas so text stays readable */
 #canvas-scrim{
   position:fixed;inset:0;z-index:1;pointer-events:none;
   background:rgba(8,10,18,.62);
 }
+/* legacy bg-canvas div — no longer needed but kept inert */
 #bg-canvas{ display:none; }
+/* ── HEADER ── */
 header{
   position:sticky;top:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
@@ -98,7 +104,9 @@ header{
 .sync-dot.err{background:var(--danger);}
 .sync-dot.syncing{animation:pulse .9s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.2;}}
+/* ── MAIN ── */
 main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1rem;}
+/* ── STATS ── */
 .stats-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;}
 .stats-label{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500;}
 .stats-dropdown{position:relative;}
@@ -130,8 +138,10 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .scard-label{font-size:.63rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
 .scard-value{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--text);line-height:1;}
 .scard-sub{font-size:.66rem;color:var(--muted);margin-top:.26rem;}
+/* ── LAYOUT ── */
 .layout{display:grid;grid-template-columns:340px 1fr;gap:1.25rem;align-items:start;}
 @media(max-width:1020px){.layout{grid-template-columns:1fr;}}
+/* ── FORM PANEL ── */
 .form-panel{
   background:var(--card);border:1px solid var(--border);border-radius:16px;
   padding:1.35rem;position:sticky;top:70px;
@@ -155,6 +165,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .field select option{background:var(--card);}
 .field textarea{resize:vertical;min-height:60px;line-height:1.5;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;}
+/* ── RESUME ATTACH ── */
 .resume-wrap{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;}
 .resume-wrap input[type="file"]{display:none;}
 .resume-btn{
@@ -166,6 +177,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .resume-name{font-size:.72rem;color:var(--teal2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
 .resume-clear{cursor:pointer;color:var(--muted);font-size:.8rem;padding:.14rem .4rem;border-radius:5px;transition:color .14s;}
 .resume-clear:hover{color:var(--danger);}
+/* ── ADDONS ── */
 .addon-toggle{
   display:flex;align-items:center;gap:.45rem;cursor:pointer;
   padding:.44rem .7rem;background:var(--surface);border:1px solid var(--border);
@@ -181,6 +193,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .addon-chk{margin-top:.56rem;accent-color:var(--indigo);width:13px;height:13px;flex-shrink:0;cursor:pointer;}
 .addon-field{flex:1;opacity:.32;pointer-events:none;transition:opacity .18s;}
 .addon-field.enabled{opacity:1;pointer-events:all;}
+/* ── Q&A ── */
 .qa-section{margin-top:.12rem;}
 .qa-section-title{font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.45rem;}
 #qaContainer{display:flex;flex-direction:column;gap:.52rem;}
@@ -192,6 +205,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   border-radius:7px;padding:.28rem .64rem;cursor:pointer;transition:all .14s;margin-top:.32rem;
 }
 .add-qa-btn:hover{background:rgba(92,115,242,.2);}
+/* ── BUTTONS ── */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
   padding:.5rem .98rem;border-radius:8px;font-size:.8rem;font-weight:500;
@@ -208,7 +222,9 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .btn-sm{padding:.28rem .62rem;font-size:.73rem;border-radius:7px;}
 .btn-full{width:100%;}
 .form-btns{display:flex;gap:.48rem;margin-top:.95rem;}
+/* ── RIGHT PANEL ── */
 .right-panel{display:flex;flex-direction:column;gap:1.05rem;}
+/* ── FILTER BAR ── */
 .filter-bar{
   display:flex;align-items:center;gap:.44rem;flex-wrap:wrap;
   background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.72rem 1rem;
@@ -227,10 +243,12 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 }
 .search-wrap input:focus{border-color:var(--indigo);box-shadow:0 0 0 2px rgba(92,115,242,.14);}
 .search-wrap::before{content:'⌕';position:absolute;left:.6rem;top:50%;transform:translateY(-50%);font-size:.95rem;color:var(--muted);pointer-events:none;}
+/* ── TABLE WRAP ── */
 .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.35);}
 .table-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.44rem;}
 .table-title{font-family:'DM Serif Display',serif;font-size:.95rem;color:var(--text);}
 .table-meta{font-size:.68rem;color:var(--muted);}
+/* ── COLUMN HEADERS — fixed 5-col grid matching rows ── */
 .col-headers{
   display:grid;
   grid-template-columns:1.6fr 1.8fr 130px 108px 90px;
@@ -243,6 +261,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   font-size:.6rem;color:var(--muted);text-transform:uppercase;
   letter-spacing:.09em;font-weight:600;padding:.0 1.1rem;
 }
+/* each app row uses same 5-col grid */
 .app-list{display:flex;flex-direction:column;}
 .app-row{border-bottom:1px solid rgba(42,51,80,.7);transition:background .12s;}
 .app-row:last-child{border-bottom:none;}
@@ -266,6 +285,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   transition:all .12s;white-space:nowrap;font-family:'DM Sans',sans-serif;
 }
 .expand-btn:hover{border-color:var(--border2);color:var(--text2);}
+/* status-sel when used as a full form field (not just a row pill) */
 #f_status_wrap .status-sel,
 #e_status_wrap .status-sel{
   border-radius:8px;
@@ -273,6 +293,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   padding:.52rem .84rem;
   width:100%;
 }
+/* ── STATUS PILL IN ROW ── */
 .status-cell{display:flex;align-items:center;}
 .status-sel{
   appearance:none;-webkit-appearance:none;
@@ -288,6 +309,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .st-rejected  .status-sel{background:var(--st-rejected-bg); color:var(--st-rejected-txt); border-color:var(--st-rejected-bdr);}
 .st-ghosted   .status-sel{background:var(--st-ghosted-bg);  color:var(--st-ghosted-txt);  border-color:var(--st-ghosted-bdr);}
 .st-withdrawn .status-sel{background:var(--st-withdrawn-bg);color:var(--st-withdrawn-txt);border-color:var(--st-withdrawn-bdr);}
+/* ── DETAIL PANEL ── */
 .app-detail{display:none;padding:.9rem 1.2rem 1.05rem;border-top:1px solid var(--border);background:rgba(0,0,0,.18);}
 .app-detail.open{display:block;animation:slideDown .17s ease;}
 @keyframes slideDown{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
@@ -303,9 +325,11 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .dqa-q{font-size:.74rem;color:var(--indigo2);font-weight:600;margin-bottom:.14rem;}
 .dqa-a{font-size:.79rem;color:var(--text2);}
 .detail-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+/* ── EMPTY ── */
 .empty-state{text-align:center;padding:3rem 2rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:.72rem;}
 .empty-state .ei{font-size:2.6rem;opacity:.35;}
 .empty-state p{font-size:.84rem;line-height:1.65;max-width:250px;}
+/* ── CONTEXT MENU ── */
 #ctxMenu{
   position:fixed;z-index:500;
   background:var(--card2);border:1px solid var(--border2);border-radius:10px;
@@ -319,7 +343,9 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 }
 #ctxMenu button:hover{background:rgba(255,255,255,.06);color:var(--text);}
 #ctxMenu .sep{height:1px;background:var(--border);margin:.22rem 0;}
+/* ── FU STRIP ── */
 #fuStrip{display:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.24);border-radius:10px;padding:.66rem .96rem;font-size:.79rem;color:var(--gold2);}
+/* ── MODALS ── */
 .overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);
   z-index:200;display:flex;align-items:center;justify-content:center;
@@ -339,16 +365,19 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
 .mgrid .full{grid-column:1/-1;}
 @media(max-width:460px){.mgrid{grid-template-columns:1fr;}}
+/* edit addon rows */
 .edit-addon-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem;}
 .edit-addon-chk{margin-top:.56rem;accent-color:var(--indigo);width:13px;height:13px;flex-shrink:0;cursor:pointer;}
 .edit-addon-field{flex:1;opacity:.32;pointer-events:none;transition:opacity .18s;}
 .edit-addon-field.enabled{opacity:1;pointer-events:all;}
+/* resume section in edit modal */
 .resume-edit-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem;}
 .resume-edit-section label.section-lbl{font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;}
 .resume-current{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;font-size:.78rem;color:var(--teal2);}
 .resume-current span.rc-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .resume-actions{display:flex;gap:.42rem;flex-wrap:wrap;}
 .resume-viewer{width:100%;height:68vh;border:none;border-radius:8px;background:var(--surface);}
+/* ── TOAST ── */
 #toast{
   position:fixed;bottom:1.3rem;right:1.3rem;z-index:600;
   background:var(--card2);border:1px solid var(--border2);border-radius:10px;
@@ -361,14 +390,17 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 }
 #toast.show{transform:translateY(0);opacity:1;}
 #toast .tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+/* ── ANIMATIONS ── */
 @keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
 .ri{animation:fadeIn .18s ease forwards;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinning{display:inline-block;animation:spin .6s linear infinite;}
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--indigo);}
+/* ── RESPONSIVE ── */
 @media(max-width:760px){
   header{height:auto;padding:.5rem .9rem;}
   main{padding:.9rem .65rem;}
@@ -385,6 +417,8 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 </style>
 </head>
 <body>
+<!-- Alca Canvas background (z-index 0) — created by JS below -->
+<!-- scrim sits above canvas, below UI -->
 <div id="canvas-scrim" aria-hidden="true"></div>
 <header>
   <div class="logo">Job<em>Track</em> Pro</div>
@@ -397,6 +431,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   </div>
 </header>
 <main>
+  <!-- STATS -->
   <div class="stats-header">
     <div class="stats-label">Overview</div>
     <div class="stats-dropdown">
@@ -413,6 +448,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   </div>
   <div class="stats-grid" id="statsGrid"></div>
   <div class="layout">
+    <!-- ── FORM PANEL ── -->
     <div class="form-panel">
       <div class="panel-title"><span class="panel-dot"></span>New Application</div>
       <div class="form-fields">
@@ -435,6 +471,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
         <div class="field"><label>Job Link (URL)</label><input type="url" id="f_link" placeholder="https://..."/></div>
         <div class="field"><label>Job Description / Notes</label><textarea id="f_notes" placeholder="Paste description, impressions, prep notes…"></textarea></div>
         <div class="field"><label>Salary Range</label><input type="text" id="f_sal" placeholder="e.g. ₹8–12 LPA or $80k–100k"/></div>
+        <!-- resume -->
         <div class="field">
           <label>Resume Used</label>
           <div class="resume-wrap">
@@ -444,6 +481,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
             <span class="resume-clear" id="f_resume_clear" onclick="clearResume()" style="display:none" title="Remove">✕</span>
           </div>
         </div>
+        <!-- ADDONS -->
         <div class="addon-toggle" id="addonToggle" onclick="toggleAddon()">
           <span>🗂 Additional Fields</span><span class="arr">▶</span>
         </div>
@@ -477,6 +515,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
             </div>
           </div>
         </div>
+        <!-- Q&A -->
         <div class="qa-section">
           <div class="qa-section-title">Other Questions</div>
           <div id="qaContainer"></div>
@@ -488,6 +527,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
         <button class="btn btn-primary btn-full" onclick="addApp()">＋ Add Application</button>
       </div>
     </div>
+    <!-- ── RIGHT PANEL ── -->
     <div class="right-panel">
       <div id="fuStrip"></div>
       <div class="filter-bar">
@@ -512,6 +552,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
             <button class="btn btn-ghost btn-sm" onclick="sortBy('status')">↕ Status</button>
           </div>
         </div>
+        <!-- COLUMN HEADERS — must match .app-summary grid exactly -->
         <div class="col-headers">
           <div class="col-h">Company</div>
           <div class="col-h ch-pos">Position</div>
@@ -528,6 +569,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
     </div>
   </div>
 </main>
+<!-- ── CONTEXT MENU ── -->
 <div id="ctxMenu">
   <button onclick="ctxEdit()">✏️ Edit</button>
   <button onclick="ctxExpand()">🔍 Details</button>
@@ -535,15 +577,16 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
   <div class="sep"></div>
   <button onclick="ctxDelete()" style="color:var(--danger)">🗑 Delete</button>
 </div>
+<!-- ── SETUP MODAL ── -->
 <div class="overlay" id="setupModal">
   <div class="modal" style="max-width:480px;">
     <div class="modal-title">⚙ Sync & Storage</div>
     <div style="background:rgba(92,115,242,.08);border:1px solid rgba(92,115,242,.2);border-radius:10px;padding:.84rem .98rem;font-size:.79rem;color:var(--indigo2);line-height:1.75;margin-bottom:.85rem;">
-      Your data is saved locally in your browser (<strong>localStorage</strong>) and persists across page refreshes automatically.<br/><br/>
-      If you have Claude's storage API available, pressing <strong>↑ Sync</strong> will also back up to the cloud.
+      <strong>Cross-device sync</strong> is powered by Claude's built-in storage — your data is saved and accessible on any device using the same Claude account.<br/><br/>
+      Press <strong>↑ Sync</strong> after switching devices to pull the latest data.
     </div>
     <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:.84rem .98rem;font-size:.79rem;color:var(--gold2);line-height:1.75;">
-      <strong>Export:</strong> Use <strong>↓ CSV</strong> to download all your applications as a spreadsheet at any time.
+      <strong>Google Drive:</strong> Use <strong>↓ CSV</strong> to export and manually save to Drive. Direct OAuth write access is not available in this standalone HTML app.
     </div>
     <div class="modal-btns">
       <button class="btn btn-ghost" onclick="closeModal('setupModal')">Close</button>
@@ -551,10 +594,12 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
     </div>
   </div>
 </div>
+<!-- ── EDIT MODAL ── -->
 <div class="overlay" id="editModal">
   <div class="modal wide">
     <div class="modal-title">✏️ Edit Application</div>
     <div class="mgrid" id="editGrid"></div>
+    <!-- resume management section -->
     <div id="editResumeSection" style="margin-top:.75rem;"></div>
     <div id="editAddons" style="margin-top:.75rem;"></div>
     <div id="editQASection" style="margin-top:.75rem;"></div>
@@ -564,6 +609,7 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
     </div>
   </div>
 </div>
+<!-- ── RESUME VIEW MODAL ── -->
 <div class="overlay" id="resumeModal">
   <div class="modal wide" style="max-width:800px;">
     <div class="modal-title" id="resumeTitle">📄 Resume</div>
@@ -582,18 +628,19 @@ main{position:relative;z-index:2;max-width:1460px;margin:0 auto;padding:1.4rem 1
 let apps=[], cfg={statsVis:{total:true,pipeline:true,week:false,interview:false,offer:false,rejected:false},lastSync:null};
 let filterStatus='All', sortKey='date', sortAsc=false, editIdx=null, ctxIdx=null;
 let qaCounter=0, currentResume=null;
-let editResumeAction=null;
-let editNewResume=null;
+// resume being edited (in edit modal)
+let editResumeAction=null; // null | 'replace' | 'delete' — set during edit
+let editNewResume=null;    // new file data if replacing
 const APPS_KEY='jtp_apps_v3', CFG_KEY='jtp_cfg_v3';
 const STATUSES=['Applied','Screening','Interview','Offer','Rejected','Ghosted','Withdrawn'];
-
 /* ══════════════════════════════════════════
-   STORAGE  — localStorage is always primary;
-             window.storage (Claude API) is
-             an optional cloud sync layer.
+   CLOUD STORAGE
+   — localStorage is always primary.
+   — window.storage (Claude API) is an
+     optional cloud sync layer on top.
 ══════════════════════════════════════════ */
 async function loadData(){
-  // 1. Always load from localStorage first — this is the reliable source of truth
+  // 1. Always load from localStorage first — reliable source of truth
   try{
     const a=localStorage.getItem(APPS_KEY);
     const c=localStorage.getItem(CFG_KEY);
@@ -602,7 +649,7 @@ async function loadData(){
     setSS('ok','Local ✓');
   }catch(e){ console.warn('localStorage read failed',e); }
 
-  // 2. Optionally sync from cloud (only overrides if cloud has data)
+  // 2. Optionally sync from cloud (only overrides if cloud actually has data)
   if(typeof window.storage !== 'undefined'){
     try{
       const [ar,cr]=await Promise.all([
@@ -618,7 +665,6 @@ async function loadData(){
     }catch(e){ /* cloud unavailable — localStorage data is still valid */ }
   }
 }
-
 async function saveData(){
   setSS('syncing','Saving…');
 
@@ -640,21 +686,18 @@ async function saveData(){
     }catch(e){ /* cloud unavailable — data is safe in localStorage */ }
   }
 }
-
 async function manualSync(){
   const btn=document.getElementById('syncBtn');
   btn.disabled=true; btn.innerHTML='<span class="spinning">↻</span>';
   await loadData(); applyStatsVis(); renderStats(); renderList(); checkFollowUps();
   btn.disabled=false; btn.textContent='↑ Sync';
-  toast('Data refreshed','success');
+  toast('Data synced','success');
 }
-
 function setSS(state,lbl){
   const d=document.getElementById('syncDot');
   d.className='sync-dot'+(state==='ok'?' ok':state==='err'?' err':state==='syncing'?' syncing':'');
   document.getElementById('syncLbl').textContent=lbl;
 }
-
 /* ══════════════════════════════════════════
    RESUME — main form
 ══════════════════════════════════════════ */
@@ -674,7 +717,6 @@ function clearResume(){
   document.getElementById('f_resume_name').textContent='';
   document.getElementById('f_resume_clear').style.display='none';
 }
-
 /* ══════════════════════════════════════════
    RESUME — view modal
 ══════════════════════════════════════════ */
@@ -694,7 +736,6 @@ function viewResume(idx){
   };
   openModal('resumeModal');
 }
-
 /* ══════════════════════════════════════════
    STATS
 ══════════════════════════════════════════ */
@@ -720,7 +761,6 @@ function saveStatsVis(){
 }
 function toggleStatsMenu(e){e&&e.stopPropagation();document.getElementById('statsPopover').classList.toggle('open');}
 document.addEventListener('click',()=>document.getElementById('statsPopover').classList.remove('open'));
-
 /* ══════════════════════════════════════════
    ADDONS
 ══════════════════════════════════════════ */
@@ -731,7 +771,6 @@ function toggleAddon(){
 function toggleAddonField(fieldId,chk){
   document.getElementById(fieldId).classList.toggle('enabled',chk.checked);
 }
-
 /* ══════════════════════════════════════════
    Q&A
 ══════════════════════════════════════════ */
@@ -755,7 +794,6 @@ function collectQAs(){
   });
   return pairs;
 }
-
 /* ══════════════════════════════════════════
    ADD APP
 ══════════════════════════════════════════ */
@@ -776,7 +814,7 @@ async function addApp(){
   };
   apps.unshift(app); await saveData();
   clearForm(); renderStats(); renderList(); checkFollowUps();
-  toast('Application saved ✓','success');
+  toast('Application added & synced ✓','success');
 }
 function clearForm(){
   ['f_co','f_pos','f_loc','f_sal','f_link','f_rec','f_notes','f_fu'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
@@ -785,13 +823,12 @@ function clearForm(){
   document.getElementById('f_src').value='';
   document.getElementById('qaContainer').innerHTML=''; qaCounter=0;
   clearResume();
-  colorFormStatus();
+  colorFormStatus(); // reset status colour back to Applied
   ['chk_type','chk_fu','chk_round','chk_rec'].forEach(id=>{
     const chk=document.getElementById(id);
     if(chk){chk.checked=false;document.getElementById('af_'+id.replace('chk_','')).classList.remove('enabled');}
   });
 }
-
 /* ══════════════════════════════════════════
    DELETE
 ══════════════════════════════════════════ */
@@ -800,7 +837,6 @@ async function delApp(idx){
   apps.splice(idx,1); await saveData(); renderStats(); renderList();
   toast('Deleted','warn');
 }
-
 /* ══════════════════════════════════════════
    FILTER / SORT
 ══════════════════════════════════════════ */
@@ -810,7 +846,6 @@ function setFilter(s,el){
   el.classList.add('active'); renderList();
 }
 function sortBy(k){if(sortKey===k) sortAsc=!sortAsc; else{sortKey=k;sortAsc=false;} renderList();}
-
 /* ══════════════════════════════════════════
    RENDER LIST
 ══════════════════════════════════════════ */
@@ -872,7 +907,6 @@ function toggleDetail(idx){
   const open=det.classList.toggle('open');
   if(btn) btn.textContent=open?'⊖ Close':'⊕ Details';
 }
-
 /* ══════════════════════════════════════════
    QUICK STATUS
 ══════════════════════════════════════════ */
@@ -880,7 +914,6 @@ async function quickStatus(idx,val){
   apps[idx].status=val; renderList(); renderStats();
   await saveData(); toast('Status updated','success');
 }
-
 /* ══════════════════════════════════════════
    CONTEXT MENU
 ══════════════════════════════════════════ */
@@ -898,7 +931,6 @@ function ctxEdit(){hideCtx();if(ctxIdx!==null) openEdit(ctxIdx);}
 function ctxExpand(){hideCtx();if(ctxIdx!==null) toggleDetail(ctxIdx);}
 function ctxResume(){hideCtx();if(ctxIdx!==null) viewResume(ctxIdx);}
 function ctxDelete(){hideCtx();if(ctxIdx!==null) delApp(ctxIdx);}
-
 /* ══════════════════════════════════════════
    EDIT MODAL
 ══════════════════════════════════════════ */
@@ -910,6 +942,7 @@ function openEdit(idx){
   const rounds=['','Phone Screen','Technical','HR Round','Case Study','Final Round','Offer Stage'];
   const sources=['','LinkedIn','Naukri','Indeed','Glassdoor','Company Website','Referral','AngelList','Internshala','Other'];
   const types=['Full-time','Part-time','Contract','Internship','Freelance'];
+  // core fields grid
   document.getElementById('editGrid').innerHTML=`
     ${mf('Company *','e_co','text',a.company)}
     ${mf('Position *','e_pos','text',a.position)}
@@ -920,7 +953,9 @@ function openEdit(idx){
     ${mf('Salary','e_sal','text',a.salary)}
     ${mf('Job Link','e_link','url',a.link)}
     <div class="field full"><label>Notes / Description</label><textarea id="e_notes" style="min-height:65px">${esc(a.notes||'')}</textarea></div>`;
+  // ── RESUME MANAGEMENT SECTION ──
   renderEditResumeSection(a);
+  // addons with checkboxes
   document.getElementById('editAddons').innerHTML=`
     <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:500;margin-bottom:.46rem;">Additional Fields</div>
     ${eaRow('ea_type','eaf_type','Job Type',`<select id="e_type_sel">${types.map(t=>`<option${(a.type||'')==t?' selected':''}>${t}</option>`).join('')}</select>`,!!a.type)}
@@ -931,6 +966,7 @@ function openEdit(idx){
     const chk=document.getElementById(id);
     if(chk) chk.addEventListener('change',function(){document.getElementById('eaf_'+id.replace('ea_','')).classList.toggle('enabled',this.checked);});
   });
+  // Q&A in edit modal
   let eqc=0;
   document.getElementById('editQASection').innerHTML=`
     <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:500;margin-bottom:.42rem;">Other Questions</div>
@@ -947,8 +983,10 @@ function openEdit(idx){
   };
   (a.qa||[]).forEach(p=>window.addEQA(p.q,p.a));
   openModal('editModal');
+  // colour the status dropdown immediately
   setTimeout(colorEditStatus, 10);
 }
+/* renders the resume management panel inside edit modal */
 function renderEditResumeSection(a){
   const sec=document.getElementById('editResumeSection');
   const hasResume=!!a.resume;
@@ -982,6 +1020,7 @@ function renderEditResumeSection(a){
       </div>`;
   }
 }
+/* called when user picks a replacement / new file */
 function editResumeReplace(inp){
   const f=inp.files[0]; if(!f) return;
   const reader=new FileReader();
@@ -992,7 +1031,11 @@ function editResumeReplace(inp){
   };
   reader.readAsDataURL(f);
 }
-function editResumeAdd(){ document.getElementById('er_file').click(); }
+/* add another resume (replaces — most applicants only have one primary) */
+function editResumeAdd(){
+  document.getElementById('er_file').click();
+}
+/* mark for deletion */
 function editResumeDelete(){
   if(!confirm('Remove the attached resume?')) return;
   editResumeAction='delete';
@@ -1016,6 +1059,7 @@ async function saveEdit(){
     const a=document.getElementById(`eqa_${n}_ans`)?.value?.trim()||'';
     if(q||a) editQAs.push({q,a});
   });
+  // resolve resume change
   let finalResume=apps[editIdx].resume;
   if(editResumeAction==='replace' && editNewResume) finalResume=editNewResume;
   else if(editResumeAction==='delete') finalResume=null;
@@ -1031,9 +1075,8 @@ async function saveEdit(){
     qa:editQAs,
   });
   await saveData(); renderStats(); renderList(); closeModal('editModal');
-  toast('Changes saved ✓','success');
+  toast('Changes saved & synced ✓','success');
 }
-
 /* ══════════════════════════════════════════
    FOLLOW-UPS
 ══════════════════════════════════════════ */
@@ -1049,7 +1092,6 @@ function checkFollowUps(){
     s.style.display='block'; s.innerHTML=`🔔 <strong>${parts.join(' · ')}</strong>`;
   } else s.style.display='none';
 }
-
 /* ══════════════════════════════════════════
    CSV EXPORT
 ══════════════════════════════════════════ */
@@ -1066,7 +1108,6 @@ function exportCSV(){
   el.download=`JobTrack_${today()}.csv`; el.click();
   toast('CSV exported ✓','success');
 }
-
 /* ══════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════ */
@@ -1074,14 +1115,12 @@ function today(){return new Date().toISOString().split('T')[0];}
 function gv(id){return document.getElementById(id)?.value?.trim()||'';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function mf(label,id,type,val){return `<div class="field"><label>${label}</label><input type="${type}" id="${id}" value="${esc(val||'')}"/></div>`;}
-
 /* ══════════════════════════════════════════
    MODALS
 ══════════════════════════════════════════ */
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o) o.classList.remove('open');}));
-
 /* ══════════════════════════════════════════
    TOAST
 ══════════════════════════════════════════ */
@@ -1093,7 +1132,6 @@ function toast(msg,type='success'){
   document.getElementById('tmsg').textContent=msg;
   t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3000);
 }
-
 /* ══════════════════════════════════════════
    STATUS COLOR HELPERS
 ══════════════════════════════════════════ */
@@ -1104,23 +1142,28 @@ function applyStatusColor(wrapId, val){
   ST_CLASSES.forEach(c=>wrap.classList.remove('st-'+c));
   wrap.classList.add('st-'+(val||'applied').toLowerCase());
 }
-function colorFormStatus(){ applyStatusColor('f_status_wrap', document.getElementById('f_status').value); }
-function colorEditStatus(){ applyStatusColor('e_status_wrap', document.getElementById('e_status')?.value); }
-
+function colorFormStatus(){
+  applyStatusColor('f_status_wrap', document.getElementById('f_status').value);
+}
+function colorEditStatus(){
+  applyStatusColor('e_status_wrap', document.getElementById('e_status')?.value);
+}
 /* ══════════════════════════════════════════
    INIT
 ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('datechip').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   document.getElementById('f_date').valueAsDate=new Date();
-  colorFormStatus();
+  colorFormStatus(); // set initial status colour
   setSS('syncing','Loading…');
   await loadData();
   applyStatsVis(); renderStats(); renderList(); checkFollowUps();
 });
 </script>
-<!-- SIMPLEX NOISE (Jonas Wagner, MIT licence) -->
-<script>
+<!-- ═══════════════════════════════════════════════════════════
+     SIMPLEX NOISE  (Jonas Wagner, MIT licence)
+═══════════════════════════════════════════════════════════ -->
+<script id="simplex-noise-script">
 (function(){
 'use strict';
 var F2=.5*(Math.sqrt(3)-1),G2=(3-Math.sqrt(3))/6,F3=1/3,G3=1/6;
@@ -1183,19 +1226,26 @@ function alea(){var s0=0,s1=0,s2=0,c=1,mash=masher();
   return function(){var t=2091639*s0+c*2.3283064365386963e-10;s0=s1;s1=s2;return s2=t-(c=t|0);};}
 function masher(){var n=0xefc8249d;return function(data){data=data.toString();for(var i=0;i<data.length;i++){n+=data.charCodeAt(i);var h=0.02519603282416938*n;n=h>>>0;h-=n;h*=n;n=h>>>0;h-=n;n+=h*0x100000000;}return(n>>>0)*2.3283064365386963e-10;};}
 window.SimplexNoise=SimplexNoise;
+if(typeof module!=='undefined')module.exports=SimplexNoise;
 })();
 </script>
-<!-- ALCA CANVAS FRAMEWORK -->
-<script>
+<!-- ═══════════════════════════════════════════════════════════
+     ALCA CANVAS FRAMEWORK
+═══════════════════════════════════════════════════════════ -->
+<script id="alca-canvas-script">
 (function(){
+// ── Math re-exports ─────────────────────────────────────────────
 const {abs,acos,asin,atan2,ceil,cos,floor,hypot,log,max,min,pow,round,sign,sin,sqrt,tan}=Math;
 const PI=Math.PI, TAU=PI*2, HALF_PI=PI*.5;
+const HALF=.5, THIRD=1/3, TWO_THIRDS=2/3, QUARTER=.25;
 window.PI=PI; window.TAU=TAU; window.HALF_PI=HALF_PI;
 window.cos=cos; window.sin=sin; window.abs=abs; window.sqrt=sqrt;
 window.floor=floor; window.ceil=ceil; window.round=round;
 window.min=min; window.max=max; window.pow=pow;
+// ── hsl helper ──────────────────────────────────────────────────
 function hsl(h,s,l,a=1){h=((h%360)+360)%360;return `hsl(${h} ${s}% ${l}% / ${a})`;}
 window.hsl=hsl;
+// ── map / lerp / constrain ───────────────────────────────────────
 function map(n,a,b,c,d){return (n-a)*(d-c)/(b-a)+c;}
 function lerp(a,b,t=.5){return t*(b-a)+a;}
 function constrain(n,mn,mx){return max(mn,min(mx,n));}
@@ -1205,6 +1255,7 @@ function random(lo=1,hi=null){
   return Math.random()*(hi-lo)+lo;
 }
 window.map=map; window.lerp=lerp; window.constrain=constrain; window.random=random;
+// ── Canvas setup ─────────────────────────────────────────────────
 let canvas=document.getElementById('canvas');
 if(!canvas){canvas=document.createElement('canvas');canvas.id='canvas';document.body.insertBefore(canvas,document.body.firstChild);}
 let ctx=canvas.getContext('2d',{desynchronized:true});
@@ -1219,6 +1270,7 @@ function _resize(){
   if('onResize' in window) window.onResize();
 }
 window.addEventListener('resize',_resize);
+// ── Draw loop ────────────────────────────────────────────────────
 let _last=null;
 window.canvasFrameDelta=0; window.frameCount=0;
 function _draw(ts){
@@ -1226,6 +1278,7 @@ function _draw(ts){
   if('draw' in window) window.draw(ts);
   requestAnimationFrame(_draw);
 }
+// ── Push/pop / transforms ────────────────────────────────────────
 function push(){ctx.save();} function pop(){ctx.restore();}
 function translate(x,y){if(typeof x==='object'){ctx.translate(x.x,x.y);}else ctx.translate(x,y??x);}
 function scale(x,y=x){ctx.scale(x,y);}
@@ -1253,6 +1306,7 @@ window.beginPath=beginPath;window.closePath=closePath;
 window.moveTo=moveTo;window.lineTo=lineTo;
 window.arc=arc;window.circle=circle;window.rect=rect;
 window.comp=comp;window.globalAlpha=globalAlpha;
+// ── Vector (minimal) ────────────────────────────────────────────
 class Vector{
   constructor(x=0,y=0,z=0){this.x=x;this.y=y;this.z=z;}
   set(x,y,z=0){if(x instanceof Vector){this.x=x.x;this.y=x.y;this.z=x.z;}else{this.x=x;this.y=y??x;this.z=z;}return this;}
@@ -1278,6 +1332,7 @@ class Vector{
   get xy(){return[this.x,this.y];}
 }
 window.Vector=Vector;
+// ── Start ────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
   _resize();
   if('setup' in window) window.setup();
@@ -1285,51 +1340,78 @@ window.addEventListener('load',()=>{
 });
 })();
 </script>
-<!-- BACKGROUND SKETCH -->
-<script>
-window.canvasOptions={autoClear:false,drawAndStop:false};
-let noise,offscreen,offCtx;
-const SCALE=3,SPEED=0.00016,HUE_SPD=0.018,TRAIL=0.18;
-function setup(){
-  noise=new SimplexNoise();
-  offscreen=document.createElement('canvas');
-  offscreen.width=Math.ceil(window.innerWidth/SCALE);
-  offscreen.height=Math.ceil(window.innerHeight/SCALE);
-  offCtx=offscreen.getContext('2d');
+<!-- ═══════════════════════════════════════════════════════════
+     BACKGROUND SKETCH — uses Alca Canvas + SimplexNoise
+═══════════════════════════════════════════════════════════ -->
+<script id="bg-sketch">
+/* Background sketch — simplex noise colour field              */
+/* Runs on the #canvas element underneath the JobTrack UI     */
+window.canvasOptions = {
+  autoClear: false,
+  drawAndStop: false,
+};
+let noise, offscreen, offCtx;
+const SCALE   = 3;   // pixel block size (lower = finer, heavier)
+const SPEED   = 0.00016; // time drift speed
+const HUE_SPD = 0.018;   // how fast hue rotates across the field
+const TRAIL   = 0.18;    // motion-blur / trail opacity (0=none, 1=hard clear)
+function setup() {
+  noise = new SimplexNoise();
+  // off-screen buffer — we draw at reduced resolution, then blit
+  offscreen        = document.createElement('canvas');
+  offscreen.width  = Math.ceil(window.innerWidth  / SCALE);
+  offscreen.height = Math.ceil(window.innerHeight / SCALE);
+  offCtx = offscreen.getContext('2d');
 }
-function onResize(){
-  if(!offscreen)return;
-  offscreen.width=Math.ceil(width/SCALE);
-  offscreen.height=Math.ceil(height/SCALE);
+function onResize() {
+  if (!offscreen) return;
+  offscreen.width  = Math.ceil(width  / SCALE);
+  offscreen.height = Math.ceil(height / SCALE);
 }
-function draw(ts){
-  const t=ts*SPEED,ow=offscreen.width,oh=offscreen.height;
-  offCtx.globalAlpha=TRAIL;
-  offCtx.fillStyle='#0a0c14';
-  offCtx.fillRect(0,0,ow,oh);
-  offCtx.globalAlpha=1;
-  const imgData=offCtx.createImageData(ow,oh);
-  const d=imgData.data;
-  for(let py=0;py<oh;py++){
-    for(let px=0;px<ow;px++){
-      const nx=px/ow,ny=py/oh;
-      const n1=noise.noise3D(nx*2.2,ny*2.2,t);
-      const n2=noise.noise3D(nx*4.4+5,ny*4.4+5,t*1.7);
-      const n=(n1*0.65+n2*0.35);
-      const hue=(nx*200+ny*80+t*18000*HUE_SPD+n*60+200)%360;
-      const saturation=70+n*30;
-      const lightness=10+(n*0.5+0.5)*22;
-      const h=((hue%360)+360)%360,s=saturation/100,l=lightness/100;
-      const a2=s*Math.min(l,1-l);
-      function ch(n2){const k=(n2+h/30)%12;return l-a2*Math.max(Math.min(k-3,9-k,1),-1);}
-      const idx=(py*ow+px)*4;
-      d[idx]=ch(0)*255;d[idx+1]=ch(8)*255;d[idx+2]=ch(4)*255;d[idx+3]=255;
+function draw(ts) {
+  const t  = ts * SPEED;
+  const ow = offscreen.width;
+  const oh = offscreen.height;
+  // Semi-transparent clear → motion trail
+  offCtx.globalAlpha = TRAIL;
+  offCtx.fillStyle   = '#0a0c14';
+  offCtx.fillRect(0, 0, ow, oh);
+  offCtx.globalAlpha = 1;
+  const imgData = offCtx.createImageData(ow, oh);
+  const d       = imgData.data;
+  for (let py = 0; py < oh; py++) {
+    for (let px = 0; px < ow; px++) {
+      const nx = px / ow;
+      const ny = py / oh;
+      // Two layers of noise for richness
+      const n1 = noise.noise3D(nx * 2.2, ny * 2.2, t);
+      const n2 = noise.noise3D(nx * 4.4 + 5, ny * 4.4 + 5, t * 1.7);
+      const n  = (n1 * 0.65 + n2 * 0.35);       // –1 … 1
+      // Hue: sweep across screen + time drift, biased toward blue/violet/teal
+      const hue        = (nx * 200 + ny * 80 + t * 18000 * HUE_SPD + n * 60 + 200) % 360;
+      const saturation = 70 + n * 30;             // 40–100
+      const lightness  = 10 + (n * 0.5 + 0.5) * 22; // 10–32 (keep dark)
+      // HSL → RGB
+      const h = ((hue % 360) + 360) % 360;
+      const s = saturation / 100;
+      const l = lightness  / 100;
+      const a2 = s * Math.min(l, 1 - l);
+      function ch(n2) {
+        const k = (n2 + h / 30) % 12;
+        return l - a2 * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      }
+      const idx = (py * ow + px) * 4;
+      d[idx    ] = ch(0)  * 255;
+      d[idx + 1] = ch(8)  * 255;
+      d[idx + 2] = ch(4)  * 255;
+      d[idx + 3] = 255;
     }
   }
-  offCtx.putImageData(imgData,0,0);
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality='high';
-  ctx.drawImage(offscreen,0,0,width,height);
+  offCtx.putImageData(imgData, 0, 0);
+  // Blit low-res buffer → full canvas (pixelation gives a nice glow texture)
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(offscreen, 0, 0, width, height);
 }
 </script>
 </body>
